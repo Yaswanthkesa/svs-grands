@@ -22,7 +22,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-bg" style={{
-          backgroundImage: `url('/assets/exterior.png')`,
+          backgroundImage: `url('/assets/gallery/exterior/ground-floor-corridor.jpeg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }} />
@@ -87,7 +87,7 @@ export default function HomePage() {
           </p>
           <div className="home-rooms-cards">
             <div className="home-room-card glass-card" onClick={() => openBooking('Non-AC')}>
-              <div className="home-room-image" style={{ backgroundImage: `url('/assets/room-nonac.png')` }} />
+              <div className="home-room-image" style={{ backgroundImage: `url('/assets/gallery/non-ac-room/first-floor-nonac.jpeg')` }} />
               <div className="home-room-info">
                 <h3>Non-AC Room</h3>
                 <p className="home-room-price">From ₹800 <small>/12hrs</small></p>
@@ -96,7 +96,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="home-room-card glass-card" onClick={() => openBooking('AC')}>
-              <div className="home-room-image" style={{ backgroundImage: `url('/assets/room-ac.png')` }} />
+              <div className="home-room-image" style={{ backgroundImage: `url('/assets/gallery/ac-room/first-floor-ac.jpeg')` }} />
               <div className="home-room-info">
                 <h3>AC Room</h3>
                 <p className="home-room-price">From ₹1,200 <small>/12hrs</small></p>

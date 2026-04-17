@@ -4,7 +4,7 @@ const attractions = [
   {
     icon: '🛕',
     name: 'Sri Venkateswara Swamy Temple',
-    distance: '~1.2 km',
+    distance: '~400 m',
     travelTime: '5 min walk',
     description: 'Known as "Konaseema Tirupathi", this ancient temple dedicated to Lord Venkateswara is the primary pilgrimage destination in the region. Thousands of devotees visit this sacred temple every year.',
   },

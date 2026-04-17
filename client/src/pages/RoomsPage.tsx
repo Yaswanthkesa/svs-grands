@@ -1,131 +1,208 @@
-import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { ROOM_NAMES, NORMAL_RATES } from '../utils/pricing';
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { calculatePrice, ROOM_NAMES, NORMAL_RATES } from '../utils/pricing';
 import type { RoomId } from '../utils/pricing';
-
-interface LayoutContext {
-  openBooking: (roomType?: string) => void;
-}
+import './RoomsPage.css';
 
 const getRoomImage = (id: string) => {
-  if (id.includes('SINGLE_AC')) return '/assets/room-ac.png';
-  if (id.includes('DOUBLE')) return '/assets/room-ac.png'; // Fallback
-  return '/assets/room-nonac.png';
+  if (id.includes('DOUBLE')) return '/assets/gallery/ac-room/ground-floor-ac.jpeg';
+  if (id.includes('SINGLE_AC')) return '/assets/gallery/ac-room/first-floor-ac.jpeg';
+  return '/assets/gallery/non-ac-room/first-floor-nonac.jpeg';
 };
 
 const getRoomDescription = (id: string) => {
-  if (id.includes('DOUBLE')) return 'Spacious double bed configuration ideal for families or large groups traveling together, accommodating up to 5 people comfortably.';
-  if (id.includes('NONAC')) return 'Spacious and well-ventilated rooms designed for a comfortable stay. Ideal for pilgrims and budget-conscious travelers.';
-  return 'Premium climate-controlled rooms for a comfortable and relaxing stay. Air-conditioned for comfort in the warm Konaseema climate.';
+  if (id.includes('DOUBLE')) return 'Spacious double bed configuration ideal for families or large groups.';
+  if (id.includes('NONAC')) return 'Well-ventilated rooms designed for a comfortable stay. Ideal for budget-conscious travelers.';
+  return 'Premium climate-controlled rooms for a comfortable and relaxing stay.';
 };
 
-const rooms = Object.keys(ROOM_NAMES).map((key) => {
+const roomsData = Object.keys(ROOM_NAMES).map((key) => {
   const id = key as RoomId;
-  const rates = NORMAL_RATES[id];
   return {
     id,
-    type: id,
     title: ROOM_NAMES[id],
     bedTypes: id.includes('DOUBLE') ? 'Two Double Beds' : 'Single Double Bed',
     image: getRoomImage(id),
-    basePrice: rates.price12h || rates.price24h,
-    durationLabel: rates.price12h ? '12 hours' : '24 hours',
     description: getRoomDescription(id),
     amenities: [
       id.includes('AC_') && !id.includes('NONAC') ? 'Air Conditioning' : 'Fan',
       'Free WiFi', 
       'Hot Water 24/7', 
       id.includes('_TV') ? 'Flat-Screen TV' : null,
-      'Room Service',
-      'Free Parking'
+      'Room Service'
     ].filter(Boolean) as string[],
   };
 });
 
 export default function RoomsPage() {
-  const { openBooking } = useOutletContext<LayoutContext>();
-  const [activeRoom, setActiveRoom] = useState(0);
-  const room = rooms[activeRoom];
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const today = new Date().toISOString().split('T')[0];
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // States
+  const [checkInDate] = useState(today);
+  const [checkOutDate] = useState(tomorrow.toISOString().split('T')[0]);
+  const [guests] = useState(2);
+  const [pricingMap, setPricingMap] = useState<Record<string, { price: number; error?: string }>>({});
+
+  // Hash Routing Logic
+  const hash = location.hash;
+  const hashIndex = hash ? parseInt(hash.replace('#', '')) : NaN;
+  const isDetailsView = !isNaN(hashIndex) && hashIndex >= 0 && hashIndex < roomsData.length;
+  const activeRoomIndex = isDetailsView ? hashIndex : 0;
+  const activeRoom = roomsData[activeRoomIndex];
+
+  useEffect(() => {
+    try {
+      const ci = new Date(`${checkInDate}T12:00`);
+      const co = new Date(`${checkOutDate}T12:00`);
+      
+      const newPricing: Record<string, { price: number; error?: string }> = {};
+      
+      roomsData.forEach(room => {
+        const result = calculatePrice(ci, co, room.id, guests);
+        newPricing[room.id] = {
+          price: result.totalPrice,
+          error: result.error
+        };
+      });
+      setPricingMap(newPricing);
+    } catch {
+      // Intentionally empty
+    }
+  }, [checkInDate, checkOutDate, guests]);
+
+  const handleBookNow = (roomId: string) => {
+    navigate(`/checkout?roomType=${roomId}&checkIn=${checkInDate}&checkOut=${checkOutDate}&guests=${guests}`);
+  };
+
+  const openDetails = (index: number) => {
+    navigate(`/rooms#${index}`);
+  };
+
+  const goToListing = () => {
+    navigate(`/rooms`);
+  };
+
+  // Pre-load prices for the active room
+  const pricing = pricingMap[activeRoom.id];
 
   return (
-    <div className="rooms-page">
-      {/* Page Header */}
-      <div className="page-header">
-        <div className="container">
-          <h1 className="page-header-title">Our Rooms</h1>
-          <div className="page-header-ornament">
-            <span /><span /><span />
-          </div>
-          <p className="page-header-subtitle">
-            SVS Grands features completely customizable options to suit every pilgrim's group size and budget.
-          </p>
-        </div>
-      </div>
+    <div className={`rooms-page-container ${isDetailsView ? 'is-details' : 'is-listing'}`}>
+      
+      {/* Background for Details View */}
+      {isDetailsView && (
+        <div 
+          className="rooms-details-bg" 
+          style={{ backgroundImage: `url(${activeRoom.image})` }} 
+        />
+      )}
 
-      {/* Room Viewer */}
-      <div className="room-viewer">
-        {/* Left Sidebar */}
-        <div className="room-sidebar">
-          <h3 className="room-sidebar-title">Room Categories</h3>
-          {rooms.map((r, i) => (
-            <div
-              key={r.type}
-              className={`room-sidebar-item ${i === activeRoom ? 'active' : ''}`}
-              onClick={() => setActiveRoom(i)}
-            >
-              <div className="room-sidebar-thumb" style={{ backgroundImage: `url(${r.image})` }} />
-              <span className="room-sidebar-label">{r.title}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Main Content */}
-        <div className="room-main">
-          <div className="room-main-image">
-            <img src={room.image} alt={room.title} />
-          </div>
-
-          <div className="room-main-content">
-            <div className="room-main-header">
-              <h2>{room.title}</h2>
-              <span className="room-main-beds">{room.bedTypes}</span>
-            </div>
-
-            <p className="room-main-desc">{room.description}</p>
-
-            <div className="room-main-amenities">
-              <h4>Room Amenities</h4>
-              <div className="room-amenity-tags">
-                {room.amenities.map(a => (
-                  <span key={a} className="room-amenity-tag">{a}</span>
+      {!isDetailsView ? (
+        <div className="rooms-listing-view">
+           <div className="container">
+              <div className="rooms-listing-header">
+                <h1>ROOMS</h1>
+                <div className="page-header-ornament">
+                  <span /><span /><span />
+                </div>
+                <p>
+                  Experience unparalleled luxury and comfort in our thoughtfully designed rooms. 
+                  Select a room below to discover more about our premium amenities and tranquil spaces.
+                </p>
+              </div>
+              <div className="rooms-grid">
+                {roomsData.map((room, idx) => (
+                  <div 
+                    key={room.id} 
+                    className={`room-grid-card ${idx === 0 ? 'featured' : 'standard'}`} 
+                    onClick={() => openDetails(idx)}
+                  >
+                    <img src={room.image} alt={room.title} className="room-grid-img" />
+                    <div className="room-card-overlay">
+                      <h2>{room.title.toUpperCase()}</h2>
+                      <button className="btn-know-more">KNOW MORE</button>
+                    </div>
+                  </div>
                 ))}
               </div>
-            </div>
-
-            {/* Pricing Details */}
-            <div className="room-pricing-section">
-              <h4>Base Pricing (Sun-Thu)</h4>
-
-              <div className="room-price-display">
-                <span className="room-price-amount">
-                  ₹{room.basePrice.toLocaleString('en-IN')}
-                </span>
-                <span className="room-price-per">
-                  / {room.durationLabel}
-                </span>
-                <span className="room-price-tax">All taxes inclusive</span>
-              </div>
-              <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '24px'}}>
-                *Prices dynamically adjust based on day of week (Weekend, Peak Friday) and extra hourly stays.
-              </p>
-
-              <button className="btn-primary room-book-btn" onClick={() => openBooking(room.type)}>
-                🏨 Book {room.title}
-              </button>
+           </div>
+        </div>
+      ) : (
+        <div className="rooms-details-view">
+          {/* Left Sidebar */}
+          <div className="rooms-details-sidebar">
+             <div className="sidebar-header">
+               <h2>Rooms</h2>
+               <button className="btn-back" onClick={goToListing}>← Back to list</button>
+             </div>
+             <div className="sidebar-thumbs">
+               {roomsData.map((room, idx) => (
+                 <div 
+                   key={room.id} 
+                   className={`sidebar-thumb-item ${idx === activeRoomIndex ? 'active' : ''}`} 
+                   onClick={() => openDetails(idx)}
+                 >
+                   <img src={room.image} alt={room.title} />
+                   <div className="thumb-overlay">
+                     <span>{room.title}</span>
+                   </div>
+                 </div>
+               ))}
+             </div>
+          </div>
+          
+          {/* Center Overlay Content */}
+          <div className="rooms-details-main">
+            <div className="details-card-overlay">
+               <h1>{activeRoom.title}</h1>
+               <div className="details-divider"></div>
+               
+               <div className="details-meta">
+                 <span>🛏️ {activeRoom.bedTypes}</span>
+                 <span>👥 Max {NORMAL_RATES[activeRoom.id].maxPersons} Persons</span>
+               </div>
+               
+               <p className="details-desc">{activeRoom.description}</p>
+               
+               <div className="details-amenities">
+                 {activeRoom.amenities.map(a => (
+                   <span key={a}>{a}</span>
+                 ))}
+               </div>
+               
+               <div className="details-pricing">
+                 {pricing?.error ? (
+                   <div className="room-rate-error">{pricing.error}</div>
+                 ) : (
+                   <>
+                     <div className="details-price-amount">
+                        ₹{(pricing?.price || 0).toLocaleString('en-IN')}
+                     </div>
+                     <span className="details-price-tax">per night, taxes included.</span>
+                     {guests > NORMAL_RATES[activeRoom.id].includedPersons && (
+                       <span className="details-price-tax" style={{color: 'var(--primary)'}}>
+                         Includes extra guest charge.
+                       </span>
+                     )}
+                   </>
+                 )}
+               </div>
+               
+               <button 
+                 className="btn-primary details-book-btn" 
+                 onClick={() => handleBookNow(activeRoom.id)}
+                 disabled={!!pricing?.error}
+               >
+                 Book Now
+               </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -1,36 +1,20 @@
-import { useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import ReservationBar from './ReservationBar';
-import BookingModal from './BookingModal';
-
-export interface ReservationData {
-  checkIn: string;
-  checkOut: string;
-  roomType: string;
-  guests: number;
-}
 
 export default function Layout() {
   const location = useLocation();
-  const [bookingOpen, setBookingOpen] = useState(false);
-  const [reservationData, setReservationData] = useState<ReservationData>({
-    checkIn: '',
-    checkOut: '',
-    roomType: 'SINGLE_AC_TV',
-    guests: 2,
-  });
+  const navigate = useNavigate();
 
   const openBooking = (roomType?: string) => {
+    const params = new URLSearchParams();
     if (roomType) {
-      setReservationData(prev => ({ ...prev, roomType }));
+      // Map legacy 'AC'/'Non-AC' labels to room IDs
+      if (roomType === 'AC') params.set('roomType', 'SINGLE_AC_TV');
+      else if (roomType === 'Non-AC') params.set('roomType', 'SINGLE_NONAC');
+      else params.set('roomType', roomType);
     }
-    setBookingOpen(true);
-  };
-
-  const handleReservationBook = (data: ReservationData) => {
-    setReservationData(data);
-    setBookingOpen(true);
+    navigate(`/checkout?${params.toString()}`);
   };
 
   return (
@@ -40,7 +24,7 @@ export default function Layout() {
         <Outlet context={{ openBooking }} />
       </main>
       {location.pathname !== '/checkout' && (
-        <ReservationBar onBookNow={handleReservationBook} />
+        <ReservationBar />
       )}
       <footer className="footer-bar">
         <div className="footer-bar-inner">
@@ -58,12 +42,7 @@ export default function Layout() {
           </div>
         </div>
       </footer>
-
-      <BookingModal
-        isOpen={bookingOpen}
-        onClose={() => setBookingOpen(false)}
-        reservationData={reservationData}
-      />
     </>
   );
 }
+

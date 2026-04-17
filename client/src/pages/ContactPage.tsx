@@ -74,12 +74,13 @@ export default function ContactPage() {
 
               <div className="contact-map">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3818.7!2d81.85!3d16.95!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a37e0c0c0c0c0c1%3A0x0!2sSVS+Grands!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500!2d81.8094954!3d16.8136096!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a37bf93a8aae9b3%3A0x3d1fdecb0c83b2f!2sSVS+Grands+-+Rooms+in+Vadapalli!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin"
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="SVS Grands Location"
                 ></iframe>
+
               </div>
             </div>
 

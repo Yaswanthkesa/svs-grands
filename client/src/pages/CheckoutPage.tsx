@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { formatDate } from '../utils/formatDate';
+import DateRangePicker from '../components/DateRangePicker';
 import { useSearchParams } from 'react-router-dom';
 import { createBooking } from '../services/api';
 import type { BookingResponse } from '../types';
@@ -10,9 +12,6 @@ export default function CheckoutPage() {
   const [searchParams] = useSearchParams();
   
   const today = new Date().toISOString().split('T')[0];
-  const maxDateObj = new Date();
-  maxDateObj.setFullYear(maxDateObj.getFullYear() + 1);
-  const maxDate = maxDateObj.toISOString().split('T')[0];
 
   // Initialize from URL params or defaults
   const paramRoom = searchParams.get('roomType');
@@ -64,9 +63,9 @@ export default function CheckoutPage() {
   };
 
   const getRoomImage = (id: string) => {
-    if (id.includes('SINGLE_AC')) return '/assets/room-ac.png';
-    if (id.includes('DOUBLE')) return '/assets/room-ac.png'; // Fallback
-    return '/assets/room-nonac.png';
+    if (id.includes('DOUBLE')) return '/assets/gallery/ac-room/ground-floor-ac.jpeg';
+    if (id.includes('SINGLE_AC')) return '/assets/gallery/ac-room/first-floor-ac.jpeg';
+    return '/assets/gallery/non-ac-room/first-floor-nonac.jpeg';
   };
 
   const generateWhatsAppUrl = (bookingId?: string) => {
@@ -277,17 +276,17 @@ export default function CheckoutPage() {
               </div>
             </div>
 
+            <div className="checkout-form-group">
+              <label className="checkout-label">Stay Dates *</label>
+              <DateRangePicker
+                checkInDate={formData.checkInDate}
+                checkOutDate={formData.checkOutDate}
+                onCheckInChange={val => handleChange('checkInDate', val)}
+                onCheckOutChange={val => handleChange('checkOutDate', val)}
+              />
+            </div>
+
             <div className="checkout-form-row">
-              <div className="checkout-form-group">
-                <label className="checkout-label">Check-In Date *</label>
-                <input 
-                  type="date" 
-                  className="checkout-input" 
-                  required min={today} max={maxDate} 
-                  value={formData.checkInDate}
-                  onChange={e => handleChange('checkInDate', e.target.value)} 
-                />
-              </div>
               <div className="checkout-form-group">
                 <label className="checkout-label">Arrival Time *</label>
                 <input 
@@ -296,19 +295,6 @@ export default function CheckoutPage() {
                   required 
                   value={formData.checkInTime}
                   onChange={e => handleChange('checkInTime', e.target.value)} 
-                />
-              </div>
-            </div>
-
-            <div className="checkout-form-row">
-              <div className="checkout-form-group">
-                <label className="checkout-label">Check-Out Date *</label>
-                <input 
-                  type="date" 
-                  className="checkout-input" 
-                  required min={formData.checkInDate || today} max={maxDate} 
-                  value={formData.checkOutDate}
-                  onChange={e => handleChange('checkOutDate', e.target.value)} 
                 />
               </div>
               <div className="checkout-form-group">
@@ -351,11 +337,11 @@ export default function CheckoutPage() {
 
               <div className="checkout-summary-item">
                 <span className="checkout-summary-label">Check-in</span>
-                <span className="checkout-summary-value">{formData.checkInDate} / {formData.checkInTime}</span>
+                <span className="checkout-summary-value">{formatDate(formData.checkInDate)} / {formData.checkInTime}</span>
               </div>
               <div className="checkout-summary-item">
                 <span className="checkout-summary-label">Check-out</span>
-                <span className="checkout-summary-value">{formData.checkOutDate} / {formData.checkOutTime}</span>
+                <span className="checkout-summary-value">{formatDate(formData.checkOutDate)} / {formData.checkOutTime}</span>
               </div>
               <div className="checkout-summary-item">
                 <span className="checkout-summary-label">Guests</span>

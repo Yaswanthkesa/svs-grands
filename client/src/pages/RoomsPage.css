@@ -1,0 +1,426 @@
+/* Base Container for the Rooms Experience */
+.rooms-page-container {
+  min-height: calc(100vh - var(--navbar-h) - var(--reservation-h) - var(--footer-h));
+  position: relative;
+  width: 100%;
+}
+
+/* ========================================================
+   ROOMS LISTING VIEW
+   ======================================================== */
+.rooms-listing-view {
+  padding: 60px 0 100px;
+  background: linear-gradient(rgba(10, 10, 20, 0.82), rgba(10, 10, 20, 0.82)), url('/assets/hotel-exterior.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.rooms-listing-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.rooms-listing-header h1 {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  letter-spacing: 3px;
+  color: var(--secondary);
+  margin-bottom: 16px;
+}
+
+.rooms-listing-header p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.room-grid-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  aspect-ratio: 9 / 16;
+}
+
+/* Make the first item span both columns to be featured */
+.room-grid-card.featured {
+  grid-column: span 2;
+  aspect-ratio: 16 / 10;
+}
+
+.room-grid-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.room-grid-card:hover .room-grid-img {
+  transform: scale(1.08); /* Zoom effect on hover */
+}
+
+.room-card-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 10, 20, 0.55); /* Dark transparent overlay */
+  padding: 32px 40px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  text-align: center;
+  min-width: 75%;
+  padding: 20px 24px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.room-grid-card:hover .room-card-overlay {
+  background: rgba(10, 10, 20, 0.7);
+  border-color: rgba(255, 215, 0, 0.6);
+}
+
+.room-card-overlay h2 {
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.featured .room-card-overlay h2 {
+  font-size: 1.05rem;
+}
+
+.btn-know-more {
+  background: transparent;
+  color: var(--secondary);
+  border: 1px solid var(--secondary);
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.room-grid-card:hover .btn-know-more {
+  background: var(--secondary);
+  color: var(--dark);
+}
+
+/* ========================================================
+   ROOM DETAILS VIEW
+   ======================================================== */
+.rooms-details-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.8s ease-in-out;
+}
+
+.rooms-details-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4); /* Slight global dimming */
+}
+
+.rooms-details-view {
+  display: flex;
+  min-height: calc(100vh - var(--navbar-h)); 
+  padding-bottom: 80px; /* Reservation bar clearance */
+  position: relative;
+  z-index: 10;
+}
+
+/* Left Sidebar */
+.rooms-details-sidebar {
+  width: 260px;
+  background: rgba(10, 10, 20, 0.9);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 215, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: var(--navbar-h);
+  height: calc(100vh - var(--navbar-h));
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* Webkit Scrollbar styling for sidebar */
+.rooms-details-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.rooms-details-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.3);
+  border-radius: 4px;
+}
+
+.sidebar-header {
+  padding: 24px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+  text-align: center;
+}
+
+.sidebar-header h2 {
+  font-family: var(--font-heading);
+  color: var(--secondary);
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.btn-back {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  transition: color 0.3s ease;
+}
+
+.btn-back:hover {
+  color: var(--text-primary);
+}
+
+.sidebar-thumbs {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar-thumb-item {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 16 / 10;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.sidebar-thumb-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.sidebar-thumb-item .thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-thumb-item .thumb-overlay span {
+  color: #fff;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 600;
+  padding: 0 10px;
+}
+
+.sidebar-thumb-item:hover img {
+  transform: scale(1.1);
+}
+
+.sidebar-thumb-item:hover .thumb-overlay {
+  opacity: 1;
+}
+
+.sidebar-thumb-item.active {
+  border-color: var(--secondary);
+}
+
+.sidebar-thumb-item.active .thumb-overlay {
+  opacity: 0; /* Let active show clearly without overlay, or keep subtle dimming */
+  background: transparent;
+}
+
+
+/* Main Center Overlay Details */
+.rooms-details-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.details-card-overlay {
+  background: rgba(18, 18, 31, 0.85); /* Semi-transparent background */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 24px 32px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.details-card-overlay h1 {
+  font-family: var(--font-heading);
+  color: var(--secondary);
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+.details-divider {
+  width: 60px;
+  height: 2px;
+  background: var(--secondary);
+  margin: 16px auto 24px;
+}
+
+.details-desc {
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.details-meta {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.details-meta span {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.details-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.details-amenities span {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+
+.details-amenities span::before {
+  content: '✦';
+  color: var(--secondary);
+  margin-right: 6px;
+}
+
+.details-pricing {
+  margin-bottom: 32px;
+}
+
+.details-price-amount {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.details-price-tax {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.details-book-btn {
+  font-size: 0.95rem;
+  padding: 12px 32px;
+}
+
+/* ========================================================
+   RESPONSIVE DESIGN
+   ======================================================== */
+@media (max-width: 900px) {
+  .room-card-overlay {
+    min-width: 80%;
+  }
+  .rooms-details-view {
+    flex-direction: column;
+  }
+  .rooms-details-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: 0;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 12px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  }
+  .sidebar-header {
+    display: none; /* Hide header on mobile horizontal scroll to save space */
+  }
+  .sidebar-thumbs {
+    flex-direction: row;
+    padding: 0;
+  }
+  .sidebar-thumb-item {
+    width: 140px;
+    flex-shrink: 0;
+  }
+  .details-card-overlay {
+    padding: 40px 32px;
+  }
+  .details-card-overlay h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .rooms-grid {
+    grid-template-columns: 1fr;
+  }
+  .room-grid-card.featured {
+    grid-column: span 1;
+    aspect-ratio: 4 / 5;
+  }
+  .room-card-overlay h2 {
+    font-size: 1.5rem;
+  }
+}
