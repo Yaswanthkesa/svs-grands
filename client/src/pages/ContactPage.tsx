@@ -43,7 +43,7 @@ export default function ContactPage() {
                 <div className="contact-info-card glass-card">
                   <div className="contact-info-card-icon">📞</div>
                   <h4>Phone</h4>
-                  <p><a href="tel:+918341199779">083411 99779</a></p>
+                  <p><a href="tel:+918341199779">Call Us</a></p>
                 </div>
                 <div className="contact-info-card glass-card">
                   <div className="contact-info-card-icon">💬</div>
@@ -53,7 +53,7 @@ export default function ContactPage() {
                 <div className="contact-info-card glass-card">
                   <div className="contact-info-card-icon">📧</div>
                   <h4>Email</h4>
-                  <p><a href="mailto:svsgrands@gmail.com">svsgrands@gmail.com</a></p>
+                  <p><a href="mailto:svsgrands@gmail.com">Email Us</a></p>
                 </div>
                 <div className="contact-info-card glass-card">
                   <div className="contact-info-card-icon">📸</div>

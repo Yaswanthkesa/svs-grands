@@ -10,7 +10,7 @@
    ======================================================== */
 .rooms-listing-view {
   padding: 60px 0 100px;
-  background: linear-gradient(rgba(10, 10, 20, 0.82), rgba(10, 10, 20, 0.82)), url('/assets/hotel-exterior.jpg');
+  background: linear-gradient(rgba(10, 10, 20, 0.82), rgba(10, 10, 20, 0.82)), url('/assets/rooms/double-ac-ff/1.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

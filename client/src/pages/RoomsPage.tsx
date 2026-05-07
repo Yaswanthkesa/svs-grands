@@ -5,9 +5,14 @@ import type { RoomId } from '../utils/pricing';
 import './RoomsPage.css';
 
 const getRoomImage = (id: string) => {
-  if (id.includes('DOUBLE')) return '/assets/gallery/ac-room/ground-floor-ac.jpeg';
-  if (id.includes('SINGLE_AC')) return '/assets/gallery/ac-room/first-floor-ac.jpeg';
-  return '/assets/gallery/non-ac-room/first-floor-nonac.jpeg';
+  if (id === 'DOUBLE_AC_GF') return '/assets/rooms/double-ac-gf-tv/1.png';
+  if (id === 'DOUBLE_AC_FF') return '/assets/rooms/double-ac-ff/1.png';
+  if (id === 'DOUBLE_NONAC') return '/assets/rooms/non-ac/1.png';
+  if (id === 'SINGLE_AC_TV') return '/assets/rooms/ac-room-tv/1.png';
+  if (id === 'SINGLE_AC_NOTV') return '/assets/rooms/ac-room/1.png';
+  if (id === 'SINGLE_NONAC_TV') return '/assets/rooms/non-ac/2.png';
+  if (id === 'SINGLE_NONAC_NOTV') return '/assets/rooms/non-ac/3.png';
+  return '/assets/rooms/ac-room/1.png';
 };
 
 const getRoomDescription = (id: string) => {
