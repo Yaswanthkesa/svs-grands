@@ -15,7 +15,7 @@ export default function CheckoutPage() {
 
   // Initialize from URL params or defaults
   const paramRoom = searchParams.get('roomType');
-  const initialRoom = (paramRoom && paramRoom in ROOM_NAMES) ? (paramRoom as RoomId) : 'SINGLE_AC_TV';
+  const initialRoom = (paramRoom && paramRoom in ROOM_NAMES) ? (paramRoom as RoomId) : 'CLASSIC';
   
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -63,14 +63,12 @@ export default function CheckoutPage() {
   };
 
   const getRoomImage = (id: string) => {
-    if (id === 'DOUBLE_AC_GF') return '/assets/rooms/double-ac-gf-tv/1.png';
-    if (id === 'DOUBLE_AC_FF') return '/assets/rooms/double-ac-ff/1.png';
-    if (id === 'DOUBLE_NONAC') return '/assets/rooms/non-ac/1.png';
-    if (id === 'SINGLE_AC_TV') return '/assets/rooms/ac-room-tv/1.png';
-    if (id === 'SINGLE_AC_NOTV') return '/assets/rooms/ac-room/1.png';
-    if (id === 'SINGLE_NONAC_TV') return '/assets/rooms/non-ac/2.png';
-    if (id === 'SINGLE_NONAC_NOTV') return '/assets/rooms/non-ac/3.png';
-    return '/assets/rooms/ac-room/1.png';
+    if (id === 'DELUXE') return '/assets/rooms/deluxe/1.png';
+    if (id === 'SUPERIOR') return '/assets/rooms/superior/1.png';
+    if (id === 'FAMILY_COMFORT') return '/assets/rooms/family-comfort/1.png';
+    if (id === 'CLASSIC') return '/assets/rooms/classic/1.png';
+    if (id === 'STANDARD') return '/assets/rooms/standard/1.png';
+    return '/assets/rooms/classic/1.png';
   };
 
   const generateWhatsAppUrl = (bookingId?: string) => {

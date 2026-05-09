@@ -17,7 +17,7 @@
   overflow: hidden;
 }
 .drp-trigger:hover {
-  border-color: #B8860B;
+  border-color: #C8A46B;
 }
 
 .drp-trigger-section {
@@ -32,7 +32,7 @@
 .drp-trigger-icon {
   width: 20px;
   height: 20px;
-  color: #B8860B;
+  color: #C8A46B;
   flex-shrink: 0;
   stroke-width: 1.5;
 }
@@ -142,7 +142,7 @@
 }
 .drp-nav:hover {
   background: #f0ede4;
-  color: #B8860B;
+  color: #C8A46B;
 }
 .drp-nav:disabled {
   opacity: 0.25;
@@ -231,14 +231,14 @@
   font-size: 0.65rem;
   font-weight: 700;
   color: white;
-  background: #B8860B;
+  background: #C8A46B;
   padding: 2px 6px;
   border-radius: 4px;
 }
 
 /* Check-in selected */
 .drp-day-checkin {
-  background: #B8860B !important;
+  background: #C8A46B !important;
   color: white !important;
   border-radius: 6px 0 0 6px;
   font-weight: 700;
@@ -250,7 +250,7 @@
 
 /* Check-out selected */
 .drp-day-checkout {
-  background: #B8860B !important;
+  background: #C8A46B !important;
   color: white !important;
   border-radius: 0 6px 6px 0;
   font-weight: 700;
@@ -293,7 +293,7 @@
   border-color: var(--dark-border, #2a2a3e);
 }
 .drp-wrapper.drp-dark .drp-trigger:hover {
-  border-color: #B8860B;
+  border-color: #C8A46B;
 }
 .drp-wrapper.drp-dark .drp-trigger-label {
   color: #888;
@@ -324,7 +324,7 @@
 .drp-compact .drp-trigger-icon {
   width: 14px;
   height: 14px;
-  color: #B8860B;
+  color: #C8A46B;
 }
 .drp-compact .drp-trigger-text {
   flex-direction: row;

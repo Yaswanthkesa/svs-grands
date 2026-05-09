@@ -4,7 +4,11 @@ import { ROOM_NAMES } from '../utils/pricing';
 import type { RoomId } from '../utils/pricing';
 import DateRangePicker from './DateRangePicker';
 
-export default function ReservationBar() {
+interface ReservationBarProps {
+  inline?: boolean;
+}
+
+export default function ReservationBar({ inline }: ReservationBarProps) {
   const navigate = useNavigate();
   const today = new Date().toISOString().split('T')[0];
 
@@ -12,7 +16,7 @@ export default function ReservationBar() {
 
   const [checkIn, setCheckIn] = useState(today);
   const [checkOut, setCheckOut] = useState(tomorrow);
-  const [roomType, setRoomType] = useState<RoomId>('SINGLE_AC_TV');
+  const [roomType, setRoomType] = useState<RoomId>('CLASSIC');
   const [guests, setGuests] = useState(1);
 
   const handleBook = () => {
@@ -20,9 +24,9 @@ export default function ReservationBar() {
   };
 
   return (
-    <div className="reservation-bar">
+    <div className={`reservation-bar ${inline ? 'reservation-bar--inline' : ''}`}>
       <div className="reservation-bar-inner">
-        <div className="reservation-bar-title">RESERVATION</div>
+        <div className="reservation-bar-title">{inline ? 'BOOK ONLINE' : 'RESERVATION'}</div>
 
         <div className="reservation-bar-field" style={{ flex: 1.5 }}>
           <DateRangePicker
@@ -30,7 +34,7 @@ export default function ReservationBar() {
             checkOutDate={checkOut}
             onCheckInChange={setCheckIn}
             onCheckOutChange={setCheckOut}
-            direction="up"
+            direction={inline ? 'up' : 'up'}
             variant="compact"
           />
         </div>
@@ -56,14 +60,16 @@ export default function ReservationBar() {
         </div>
 
         <button className="reservation-bar-book" onClick={handleBook}>
-          BOOK NOW
+          {inline ? 'FIND ROOM' : 'BOOK NOW'}
         </button>
       </div>
 
       {/* Mobile: compact sticky button */}
-      <button className="reservation-bar-mobile" onClick={handleBook}>
-        🏨 Book Your Stay
-      </button>
+      {!inline && (
+        <button className="reservation-bar-mobile" onClick={handleBook}>
+          🏨 Book Your Stay
+        </button>
+      )}
     </div>
   );
 }

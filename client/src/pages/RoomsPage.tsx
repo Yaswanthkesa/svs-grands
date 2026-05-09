@@ -5,35 +5,41 @@ import type { RoomId } from '../utils/pricing';
 import './RoomsPage.css';
 
 const getRoomImage = (id: string) => {
-  if (id === 'DOUBLE_AC_GF') return '/assets/rooms/double-ac-gf-tv/1.png';
-  if (id === 'DOUBLE_AC_FF') return '/assets/rooms/double-ac-ff/1.png';
-  if (id === 'DOUBLE_NONAC') return '/assets/rooms/non-ac/1.png';
-  if (id === 'SINGLE_AC_TV') return '/assets/rooms/ac-room-tv/1.png';
-  if (id === 'SINGLE_AC_NOTV') return '/assets/rooms/ac-room/1.png';
-  if (id === 'SINGLE_NONAC_TV') return '/assets/rooms/non-ac/2.png';
-  if (id === 'SINGLE_NONAC_NOTV') return '/assets/rooms/non-ac/3.png';
-  return '/assets/rooms/ac-room/1.png';
+  if (id === 'DELUXE') return '/assets/rooms/deluxe/1.png';
+  if (id === 'SUPERIOR') return '/assets/rooms/superior/1.png';
+  if (id === 'FAMILY_COMFORT') return '/assets/rooms/family-comfort/1.png';
+  if (id === 'CLASSIC') return '/assets/rooms/classic/1.png';
+  if (id === 'STANDARD') return '/assets/rooms/standard/1.png';
+  return '/assets/rooms/classic/1.png';
 };
 
 const getRoomDescription = (id: string) => {
-  if (id.includes('DOUBLE')) return 'Spacious double bed configuration ideal for families or large groups.';
-  if (id.includes('NONAC')) return 'Well-ventilated rooms designed for a comfortable stay. Ideal for budget-conscious travelers.';
-  return 'Premium climate-controlled rooms for a comfortable and relaxing stay.';
+  if (id === 'DELUXE' || id === 'SUPERIOR' || id === 'FAMILY_COMFORT') {
+    return 'Spacious double bed configuration ideal for families or large groups.';
+  }
+  if (id === 'STANDARD') {
+    return 'Well-ventilated rooms designed for a comfortable stay. Available in both TV and non-TV configurations to suit your preference.';
+  }
+  return 'Premium climate-controlled rooms for a comfortable and relaxing stay. Available in both TV and non-TV configurations to suit your preference.';
 };
 
 const roomsData = Object.keys(ROOM_NAMES).map((key) => {
   const id = key as RoomId;
+  const isFamily = id === 'DELUXE' || id === 'SUPERIOR' || id === 'FAMILY_COMFORT';
+  const isAC = id === 'CLASSIC' || id === 'DELUXE' || id === 'SUPERIOR';
+  const isOptionalTV = id === 'CLASSIC' || id === 'STANDARD';
+
   return {
     id,
     title: ROOM_NAMES[id],
-    bedTypes: id.includes('DOUBLE') ? 'Two Double Beds' : 'Single Double Bed',
+    bedTypes: isFamily ? 'Two Double Beds' : 'Single Double Bed',
     image: getRoomImage(id),
     description: getRoomDescription(id),
     amenities: [
-      id.includes('AC_') && !id.includes('NONAC') ? 'Air Conditioning' : 'Fan',
+      isAC ? 'Air Conditioning' : 'Fan',
       'Free WiFi', 
       'Hot Water 24/7', 
-      id.includes('_TV') ? 'Flat-Screen TV' : null,
+      isOptionalTV ? 'TV (Optional)' : 'Flat-Screen TV',
       'Room Service'
     ].filter(Boolean) as string[],
   };

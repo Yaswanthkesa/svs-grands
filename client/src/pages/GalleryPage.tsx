@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 type MediaType = 'image' | 'video';
-type Category = 'all' | 'ac-rooms' | 'ac-rooms-tv' | 'double-ac-ff' | 'double-ac-gf' | 'non-ac-rooms' | 'exterior';
+type Category = 'all' | 'classic' | 'standard' | 'deluxe' | 'superior' | 'family-comfort' | 'exterior';
 
 interface GalleryItem {
   src: string;
@@ -12,42 +12,45 @@ interface GalleryItem {
 }
 
 const galleryItems: GalleryItem[] = [
-  // AC Rooms (Without TV) — New Images
-  { src: '/assets/rooms/ac-room/1.png', alt: 'AC Room — View 1', category: 'ac-rooms', type: 'image' },
-  { src: '/assets/rooms/ac-room/2.png', alt: 'AC Room — View 2', category: 'ac-rooms', type: 'image' },
-  { src: '/assets/rooms/ac-room/3.png', alt: 'AC Room — View 3', category: 'ac-rooms', type: 'image' },
-  { src: '/assets/rooms/ac-room/4.png', alt: 'AC Room — View 4', category: 'ac-rooms', type: 'image' },
-  { src: '/assets/rooms/ac-room/5.png', alt: 'AC Room — View 5', category: 'ac-rooms', type: 'image' },
-  // AC Rooms — Videos (kept as-is)
-  { src: '/assets/gallery/ac-room/first-floor-ac.mp4', alt: 'First Floor AC Room Tour', category: 'ac-rooms', type: 'video', poster: '/assets/rooms/ac-room/1.png' },
-  { src: '/assets/gallery/ac-room/ground-floor-ac-room.mp4', alt: 'Ground Floor AC Room Tour', category: 'ac-rooms', type: 'video', poster: '/assets/rooms/ac-room/2.png' },
-  { src: '/assets/gallery/ac-room/ac-room-tour-1.mp4', alt: 'AC Room Walkthrough 1', category: 'ac-rooms', type: 'video', poster: '/assets/rooms/ac-room/3.png' },
-  { src: '/assets/gallery/ac-room/ac-room-tour-2.mp4', alt: 'AC Room Walkthrough 2', category: 'ac-rooms', type: 'video', poster: '/assets/rooms/ac-room/4.png' },
-  // AC Rooms (With TV) — New Images
-  { src: '/assets/rooms/ac-room-tv/1.png', alt: 'AC Room with TV — View 1', category: 'ac-rooms-tv', type: 'image' },
-  { src: '/assets/rooms/ac-room-tv/2.png', alt: 'AC Room with TV — View 2', category: 'ac-rooms-tv', type: 'image' },
-  { src: '/assets/rooms/ac-room-tv/3.png', alt: 'AC Room with TV — View 3', category: 'ac-rooms-tv', type: 'image' },
-  { src: '/assets/rooms/ac-room-tv/4.png', alt: 'AC Room with TV — View 4', category: 'ac-rooms-tv', type: 'image' },
-  { src: '/assets/rooms/ac-room-tv/5.png', alt: 'AC Room with TV — View 5', category: 'ac-rooms-tv', type: 'image' },
-  // Double Bed AC — First Floor — New Images
-  { src: '/assets/rooms/double-ac-ff/1.png', alt: 'Double Bed AC (1st Floor) — View 1', category: 'double-ac-ff', type: 'image' },
-  { src: '/assets/rooms/double-ac-ff/2.png', alt: 'Double Bed AC (1st Floor) — View 2', category: 'double-ac-ff', type: 'image' },
-  { src: '/assets/rooms/double-ac-ff/3.png', alt: 'Double Bed AC (1st Floor) — View 3', category: 'double-ac-ff', type: 'image' },
-  { src: '/assets/rooms/double-ac-ff/4.png', alt: 'Double Bed AC (1st Floor) — View 4', category: 'double-ac-ff', type: 'image' },
-  { src: '/assets/rooms/double-ac-ff/5.png', alt: 'Double Bed AC (1st Floor) — View 5', category: 'double-ac-ff', type: 'image' },
-  { src: '/assets/rooms/double-ac-ff/6.png', alt: 'Double Bed AC (1st Floor) — View 6', category: 'double-ac-ff', type: 'image' },
-  // Double Bed AC — Ground Floor (With TV) — New Images
-  { src: '/assets/rooms/double-ac-gf-tv/1.png', alt: 'Double Bed AC (Ground Floor) — View 1', category: 'double-ac-gf', type: 'image' },
-  { src: '/assets/rooms/double-ac-gf-tv/2.png', alt: 'Double Bed AC (Ground Floor) — View 2', category: 'double-ac-gf', type: 'image' },
-  { src: '/assets/rooms/double-ac-gf-tv/3.png', alt: 'Double Bed AC (Ground Floor) — View 3', category: 'double-ac-gf', type: 'image' },
-  { src: '/assets/rooms/double-ac-gf-tv/4.png', alt: 'Double Bed AC (Ground Floor) — View 4', category: 'double-ac-gf', type: 'image' },
-  // Non-AC Rooms — New Images
-  { src: '/assets/rooms/non-ac/1.png', alt: 'Non-AC Room — View 1', category: 'non-ac-rooms', type: 'image' },
-  { src: '/assets/rooms/non-ac/2.png', alt: 'Non-AC Room — View 2', category: 'non-ac-rooms', type: 'image' },
-  { src: '/assets/rooms/non-ac/3.png', alt: 'Non-AC Room — View 3', category: 'non-ac-rooms', type: 'image' },
-  // Non-AC Room — Video (kept as-is)
-  { src: '/assets/gallery/non-ac-room/non-ac-room-tour.mp4', alt: 'Non-AC Room Tour', category: 'non-ac-rooms', type: 'video', poster: '/assets/rooms/non-ac/1.png' },
-  // Exterior / Property — kept as-is
+  // Classic Room
+  { src: '/assets/rooms/classic/1.png', alt: 'Classic Room — View 1', category: 'classic', type: 'image' },
+  { src: '/assets/rooms/classic/2.png', alt: 'Classic Room — View 2', category: 'classic', type: 'image' },
+  { src: '/assets/rooms/classic/3.png', alt: 'Classic Room — View 3', category: 'classic', type: 'image' },
+  { src: '/assets/rooms/classic/4.png', alt: 'Classic Room — View 4', category: 'classic', type: 'image' },
+  { src: '/assets/rooms/classic/5.png', alt: 'Classic Room — View 5', category: 'classic', type: 'image' },
+  // Classic Rooms — Videos
+  { src: '/assets/gallery/classic/first-floor-ac.mp4', alt: 'Classic Room Tour', category: 'classic', type: 'video', poster: '/assets/rooms/classic/1.png' },
+  { src: '/assets/gallery/classic/ground-floor-ac-room.mp4', alt: 'Classic Room Tour 2', category: 'classic', type: 'video', poster: '/assets/rooms/classic/2.png' },
+  { src: '/assets/gallery/classic/ac-room-tour-1.mp4', alt: 'Classic Room Walkthrough 1', category: 'classic', type: 'video', poster: '/assets/rooms/classic/3.png' },
+  { src: '/assets/gallery/classic/ac-room-tour-2.mp4', alt: 'Classic Room Walkthrough 2', category: 'classic', type: 'video', poster: '/assets/rooms/classic/4.png' },
+  
+  // Standard Room
+  { src: '/assets/rooms/standard/1.png', alt: 'Standard Room — View 1', category: 'standard', type: 'image' },
+  { src: '/assets/rooms/standard/2.png', alt: 'Standard Room — View 2', category: 'standard', type: 'image' },
+  { src: '/assets/rooms/standard/3.png', alt: 'Standard Room — View 3', category: 'standard', type: 'image' },
+  // Standard Room — Video
+  { src: '/assets/gallery/standard/non-ac-room-tour.mp4', alt: 'Standard Room Tour', category: 'standard', type: 'video', poster: '/assets/rooms/standard/1.png' },
+
+  // Deluxe Room
+  { src: '/assets/rooms/deluxe/1.png', alt: 'Deluxe Room — View 1', category: 'deluxe', type: 'image' },
+  { src: '/assets/rooms/deluxe/2.png', alt: 'Deluxe Room — View 2', category: 'deluxe', type: 'image' },
+  { src: '/assets/rooms/deluxe/3.png', alt: 'Deluxe Room — View 3', category: 'deluxe', type: 'image' },
+  { src: '/assets/rooms/deluxe/4.png', alt: 'Deluxe Room — View 4', category: 'deluxe', type: 'image' },
+  
+  // Superior Room
+  { src: '/assets/rooms/superior/1.png', alt: 'Superior Room — View 1', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/2.png', alt: 'Superior Room — View 2', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/3.png', alt: 'Superior Room — View 3', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/4.png', alt: 'Superior Room — View 4', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/5.png', alt: 'Superior Room — View 5', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/6.png', alt: 'Superior Room — View 6', category: 'superior', type: 'image' },
+
+  // Family Comfort Room
+  { src: '/assets/rooms/family-comfort/1.png', alt: 'Family Comfort Room — View 1', category: 'family-comfort', type: 'image' },
+  { src: '/assets/rooms/family-comfort/2.png', alt: 'Family Comfort Room — View 2', category: 'family-comfort', type: 'image' },
+  { src: '/assets/rooms/family-comfort/3.png', alt: 'Family Comfort Room — View 3', category: 'family-comfort', type: 'image' },
+
+  // Exterior / Property
   { src: '/assets/gallery/exterior/ground-floor-corridor.jpeg', alt: 'Ground Floor Corridor', category: 'exterior', type: 'image' },
   { src: '/assets/gallery/exterior/ground-floor-corridor.mp4', alt: 'Corridor Walkthrough', category: 'exterior', type: 'video', poster: '/assets/gallery/exterior/ground-floor-corridor.jpeg' },
   { src: '/assets/gallery/exterior/first-floor-hall.mp4', alt: 'First Floor Hall Tour', category: 'exterior', type: 'video', poster: '/assets/gallery/exterior/ground-floor-corridor.jpeg' },
@@ -55,11 +58,11 @@ const galleryItems: GalleryItem[] = [
 
 const categories: { key: Category; label: string }[] = [
   { key: 'all', label: 'All' },
-  { key: 'ac-rooms', label: 'AC Rooms' },
-  { key: 'ac-rooms-tv', label: 'AC Rooms (TV)' },
-  { key: 'double-ac-ff', label: 'Double Bed (1st Floor)' },
-  { key: 'double-ac-gf', label: 'Double Bed (Ground)' },
-  { key: 'non-ac-rooms', label: 'Non-AC Rooms' },
+  { key: 'classic', label: 'Classic' },
+  { key: 'standard', label: 'Standard' },
+  { key: 'deluxe', label: 'Deluxe' },
+  { key: 'superior', label: 'Superior' },
+  { key: 'family-comfort', label: 'Family Comfort' },
   { key: 'exterior', label: 'Property' },
 ];
 

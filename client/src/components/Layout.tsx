@@ -1,9 +1,8 @@
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
-import ReservationBar from './ReservationBar';
 
 export default function Layout() {
-  const location = useLocation();
+
   const navigate = useNavigate();
 
   const openBooking = (roomType?: string) => {
@@ -23,9 +22,6 @@ export default function Layout() {
       <main className="page-content">
         <Outlet context={{ openBooking }} />
       </main>
-      {location.pathname !== '/checkout' && (
-        <ReservationBar />
-      )}
       <footer className="footer-bar">
         <div className="footer-bar-inner">
           <div className="footer-bar-badge">

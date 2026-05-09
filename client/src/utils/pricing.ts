@@ -1,11 +1,9 @@
 export type RoomId = 
-  | 'SINGLE_AC_TV' 
-  | 'SINGLE_AC_NOTV' 
-  | 'SINGLE_NONAC_TV' 
-  | 'SINGLE_NONAC_NOTV' 
-  | 'DOUBLE_AC_GF' 
-  | 'DOUBLE_AC_FF' 
-  | 'DOUBLE_NONAC';
+  | 'CLASSIC' 
+  | 'STANDARD' 
+  | 'DELUXE' 
+  | 'SUPERIOR' 
+  | 'FAMILY_COMFORT';
 
 export interface PricingRule {
   price12h?: number;     // Undefined for Peak Friday fixed rate
@@ -19,44 +17,36 @@ export interface PricingRule {
 export type PricingMatrix = Record<RoomId, PricingRule>;
 
 export const NORMAL_RATES: PricingMatrix = {
-  SINGLE_AC_TV: { price12h: 1100, price24h: 1600, extraHr: 100, extraPerson: 300, maxPersons: 3, includedPersons: 2 },
-  SINGLE_AC_NOTV: { price12h: 1000, price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 3, includedPersons: 2 },
-  SINGLE_NONAC_TV: { price12h: 900, price24h: 1100, extraHr: 100, extraPerson: 200, maxPersons: 3, includedPersons: 2 },
-  SINGLE_NONAC_NOTV: { price12h: 800, price24h: 1000, extraHr: 100, extraPerson: 200, maxPersons: 3, includedPersons: 2 },
-  DOUBLE_AC_GF: { price12h: 1500, price24h: 2000, extraHr: 150, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
-  DOUBLE_AC_FF: { price12h: 1500, price24h: 2000, extraHr: 150, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
-  DOUBLE_NONAC: { price12h: 1200, price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
+  CLASSIC: { price12h: 1000, price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 3, includedPersons: 2 },
+  STANDARD: { price12h: 800, price24h: 1000, extraHr: 100, extraPerson: 200, maxPersons: 3, includedPersons: 2 },
+  DELUXE: { price12h: 1500, price24h: 2000, extraHr: 150, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
+  SUPERIOR: { price12h: 1500, price24h: 2000, extraHr: 150, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
+  FAMILY_COMFORT: { price12h: 1200, price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
 };
 
 export const WEEKEND_RATES: PricingMatrix = {
-  SINGLE_AC_TV: { price12h: 1300, price24h: 1600, extraHr: 100, extraPerson: 300, maxPersons: 3, includedPersons: 2 },
-  SINGLE_AC_NOTV: { price12h: 1200, price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 3, includedPersons: 2 },
-  SINGLE_NONAC_TV: { price12h: 1000, price24h: 1200, extraHr: 100, extraPerson: 200, maxPersons: 3, includedPersons: 2 },
-  SINGLE_NONAC_NOTV: { price12h: 900, price24h: 1100, extraHr: 100, extraPerson: 200, maxPersons: 3, includedPersons: 2 },
-  DOUBLE_AC_GF: { price12h: 1500, price24h: 2000, extraHr: 150, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
-  DOUBLE_AC_FF: { price12h: 1500, price24h: 2000, extraHr: 150, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
-  DOUBLE_NONAC: { price12h: 1200, price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
+  CLASSIC: { price12h: 1200, price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 3, includedPersons: 2 },
+  STANDARD: { price12h: 900, price24h: 1100, extraHr: 100, extraPerson: 200, maxPersons: 3, includedPersons: 2 },
+  DELUXE: { price12h: 1500, price24h: 2000, extraHr: 150, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
+  SUPERIOR: { price12h: 1500, price24h: 2000, extraHr: 150, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
+  FAMILY_COMFORT: { price12h: 1200, price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 5, includedPersons: 4 },
 };
 
 export const PEAK_RATES: PricingMatrix = {
   // Friday strictly 24hr blocks (no 12hr rate). price24h is the fixed block rate.
-  SINGLE_AC_TV: { price24h: 1600, extraHr: 100, extraPerson: 300, maxPersons: 4, includedPersons: 2 },
-  SINGLE_AC_NOTV: { price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 4, includedPersons: 2 },
-  SINGLE_NONAC_TV: { price24h: 1100, extraHr: 100, extraPerson: 300, maxPersons: 4, includedPersons: 2 },
-  SINGLE_NONAC_NOTV: { price24h: 1000, extraHr: 100, extraPerson: 300, maxPersons: 4, includedPersons: 2 },
-  DOUBLE_AC_GF: { price24h: 2500, extraHr: 200, extraPerson: 300, maxPersons: 5, includedPersons: 4 }, // "max 5 persons"
-  DOUBLE_AC_FF: { price24h: 2000, extraHr: 200, extraPerson: 300, maxPersons: 4, includedPersons: 4 },
-  DOUBLE_NONAC: { price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 4, includedPersons: 4 },
+  CLASSIC: { price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 4, includedPersons: 2 },
+  STANDARD: { price24h: 1000, extraHr: 100, extraPerson: 300, maxPersons: 4, includedPersons: 2 },
+  DELUXE: { price24h: 2500, extraHr: 200, extraPerson: 300, maxPersons: 5, includedPersons: 4 }, // "max 5 persons"
+  SUPERIOR: { price24h: 2000, extraHr: 200, extraPerson: 300, maxPersons: 4, includedPersons: 4 },
+  FAMILY_COMFORT: { price24h: 1500, extraHr: 100, extraPerson: 300, maxPersons: 4, includedPersons: 4 },
 };
 
 export const ROOM_NAMES: Record<RoomId, string> = {
-  SINGLE_AC_TV: 'Single AC Room (With TV)',
-  SINGLE_AC_NOTV: 'Single AC Room (Without TV)',
-  SINGLE_NONAC_TV: 'Single Non-AC Room (With TV)',
-  SINGLE_NONAC_NOTV: 'Single Non-AC Room (Without TV)',
-  DOUBLE_AC_GF: 'Double Bed AC Room (Ground Floor)',
-  DOUBLE_AC_FF: 'Double Bed AC Room (First Floor)',
-  DOUBLE_NONAC: 'Double Bed Non-AC Room',
+  CLASSIC: 'Classic Room',
+  STANDARD: 'Standard Room',
+  DELUXE: 'Deluxe Room',
+  SUPERIOR: 'Superior Room',
+  FAMILY_COMFORT: 'Family Comfort Room',
 };
 
 /**
@@ -147,40 +137,7 @@ export const calculatePrice = (checkIn: Date, checkOut: Date, roomId: RoomId, gu
   const blocks = [];
   let totalPrice = 0;
 
-  // Let's protect against Friday 11AM crossing as per rules
-  // "if they entered beyond 11Am on friday then they need to be prompted like you can only able to book upto 11am on friday"
-  // So: if check-in is before Friday 11AM that week, but checkout is AFTER Friday 11AM that week, return error.
-  // Actually, easiest way is to find out if the stay OVERLAPS the Thu 11AM -> Fri 11AM peak boundary in a specific way.
-  // The rule: "if you want beyond [Fri 11am] then do another booking from friday 11am"
-  // Let's implement a hard block: If checkIn is before a Friday 11AM, and checkOut is after that same Friday 11AM... reject.
-  const checkInDateObj = new Date(checkIn);
-  // Find the next Friday 11AM relative to check-in
-  let nextFriday11AM = new Date(checkInDateObj);
-  nextFriday11AM.setHours(11, 0, 0, 0);
-  
-  // What day is checkIn?
-  const ciDay = checkInDateObj.getDay();
-  // If checkIn is Fri (5), but before 11AM, next Friday 11AM is TODAY 11AM.
-  // If checkIn is Fri (5) after 11AM, next Friday 11AM is next week.
-  if (ciDay === 5 && checkInDateObj.getHours() < 11) {
-     // nextFriday11AM is today
-  } else {
-     // find next friday
-     const daysUntilFriday = (5 - ciDay + 7) % 7;
-     // if daysUntilFriday is 0, it means it's Friday AFTER 11AM, so move to NEXT friday
-     const addDays = (daysUntilFriday === 0) ? 7 : daysUntilFriday;
-     nextFriday11AM.setDate(checkInDateObj.getDate() + addDays);
-  }
 
-  // If the booking crosses exactly this Friday 11AM boundary, block it!
-  // Note: Only block if checkIn is strictly BEFORE nextFriday11AM and checkOut is strictly AFTER nextFriday11AM.
-  if (checkIn.getTime() < nextFriday11AM.getTime() && checkOut.getTime() > nextFriday11AM.getTime()) {
-      return { 
-        totalPrice: 0, 
-        blocks: [], 
-        error: `Bookings spanning across Friday 11:00 AM must be split. Please adjust check-out to Friday 11:00 AM and create a new booking for the rest of your stay.` 
-      };
-  }
 
   while (currentTime < endTime) {
     const remainingMs = endTime - currentTime;
