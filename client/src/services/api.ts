@@ -1,7 +1,10 @@
-import { collection, addDoc, getDoc, doc } from 'firebase/firestore';
-import { db } from '../config/firebase';
-
 import { ROOM_NAMES, NORMAL_RATES } from '../utils/pricing';
+import type { BookingData } from '../types';
+
+/**
+ * MOCKED API SERVICES
+ * All database operations have been disabled for static deployment.
+ */
 
 export const fetchRooms = async () => {
   return Object.entries(ROOM_NAMES).map(([id, name]) => {
@@ -17,44 +20,27 @@ export const fetchRooms = async () => {
 };
 
 export const checkAvailability = async (_checkIn: string, _checkOut: string, _type?: string) => {
-  // Mock true for now
+  // Always return available in static mode
   return { available: true };
 };
 
-import type { BookingData } from '../types';
-
 export const createBooking = async (data: BookingData) => {
-  try {
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Firebase timeout - DB may not be initialized')), 5000)
-    );
-
-    const docRef: any = await Promise.race([
-      addDoc(collection(db, 'bookings'), {
-        ...data,
-        createdAt: new Date().toISOString(),
-        status: 'pending' // pending, confirmed, cancelled
-      }),
-      timeoutPromise
-    ]);
-    
-    return {
-      message: 'Booking created successfully',
-      booking: { ...data, bookingId: docRef.id, status: 'pending' }
-    };
-  } catch (error) {
-    console.error('Error adding document: ', error);
-    throw new Error('Failed to create booking in Firebase');
-  }
+  console.log('Static Mode: Booking attempt ignored.', data);
+  
+  // Return a mock success response
+  return {
+    message: 'Booking request received (Static Mode)',
+    booking: { 
+      ...data, 
+      bookingId: 'mock-' + Math.random().toString(36).substr(2, 9), 
+      status: 'pending' 
+    }
+  };
 };
 
 export const getBooking = async (id: string) => {
-  const docRef = doc(db, 'bookings', id);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    return { booking: { ...docSnap.data(), bookingId: docSnap.id } };
-  } else {
-    throw new Error('Booking not found');
-  }
+  console.log('Static Mode: Fetching mock booking for ID:', id);
+  
+  // Return a mock not found or empty state
+  throw new Error('Booking retrieval disabled in static mode');
 };
