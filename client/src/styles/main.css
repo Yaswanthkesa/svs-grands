@@ -46,12 +46,6 @@
   display: none !important;
 }
 
-@media (max-width: 991px) {
-  .navbar-overlay,
-  .navbar-drawer {
-    display: flex !important;
-  }
-}
 
 /* ===== Reset & Base ===== */
 *,
@@ -3235,53 +3229,8 @@ rgba(231,228,222,0.82)
   }
 }
 
-/* --- Mobile (≤ 768px) --- */
-@media (max-width: 768px) {
-  /* Gallery Mobile Fixes */
-  .gallery-hero { padding: 60px 0 !important; }
-  .gallery-hero .page-header-title { font-size: 2.8rem; }
-  
-  .gallery-filter-bar { 
-    position: static !important; /* Disable sticky on mobile */
-    padding: 16px 0;
-    margin-bottom: 10px;
-    box-shadow: none;
-  }
-  
-  .gallery-filters-container {
-    justify-content: flex-start !important;
-    overflow-x: auto;
-    padding: 0 15px 10px;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .gallery-filters {
-    background: transparent;
-    border: none;
-    padding: 0;
-    gap: 8px;
-    display: flex;
-    flex-wrap: nowrap; /* Force single row for scroll */
-  }
-  
-  .gallery-filter-btn {
-    background: #f8f6f2;
-    border: 1px solid rgba(200, 164, 107, 0.1);
-    padding: 8px 18px;
-  }
-
-  .gallery-masonry {
-    grid-template-columns: repeat(2, 1fr) !important;
-    grid-auto-rows: 200px !important;
-    gap: 15px !important;
-  }
-
-  .gallery-item-hover-content { padding: 15px; }
-  .item-title { font-size: 0.9rem; }
-  .lightbox-nav { width: 44px; height: 44px; font-size: 1.4rem; }
-  .lightbox-prev { left: 10px; }
-  .lightbox-next { right: 10px; }
-
+/* --- Mobile / Tablet Navigation Switch (≤ 991px) --- */
+@media (max-width: 991px) {
   :root {
     --top-bar-h: 0px;
     --navbar-h: 60px;
@@ -3300,12 +3249,12 @@ rgba(231,228,222,0.82)
 
   /* Hide navbar right on mobile */
   .navbar-right {
-    display: none;
+    display: none !important;
   }
 
   /* Hide desktop links on mobile */
   .navbar-links {
-    display: none;
+    display: none !important;
   }
 
   /* LAYERED LUXURY MOBILE MENU (SOLINOM STYLE) */
@@ -3321,6 +3270,7 @@ rgba(231,228,222,0.82)
     opacity: 0;
     visibility: hidden;
     transition: all 0.5s ease;
+    display: flex !important;
   }
 
   .navbar-overlay.open {
@@ -3337,7 +3287,7 @@ rgba(231,228,222,0.82)
     height: 100vh;
     background: #0d0b09; /* Deep Espresso */
     z-index: 9999;
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     transform: translateX(-100%);
     transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -3453,7 +3403,6 @@ rgba(231,228,222,0.82)
     transform: translateX(0);
   }
 
-  /* Staggered Item Entrance - starting after 0.5s drawer delay */
   .navbar-drawer.open .drawer-nav a:nth-child(1) { transition: all 0.5s ease 0.7s; }
   .navbar-drawer.open .drawer-nav a:nth-child(2) { transition: all 0.5s ease 0.78s; }
   .navbar-drawer.open .drawer-nav a:nth-child(3) { transition: all 0.5s ease 0.86s; }
@@ -3515,9 +3464,8 @@ rgba(231,228,222,0.82)
     color: var(--secondary);
   }
 
-  /* Hamburger & Close Interaction */
   .hamburger {
-    display: flex;
+    display: flex !important;
     z-index: 10000;
     width: 44px;
     height: 44px;
@@ -3555,6 +3503,55 @@ rgba(231,228,222,0.82)
   body.menu-open {
     overflow: hidden !important;
   }
+}
+
+/* --- Mobile (≤ 768px) --- */
+@media (max-width: 768px) {
+  /* Gallery Mobile Fixes */
+  .gallery-hero { padding: 60px 0 !important; }
+  .gallery-hero .page-header-title { font-size: 2.8rem; }
+  
+  .gallery-filter-bar { 
+    position: static !important; /* Disable sticky on mobile */
+    padding: 16px 0;
+    margin-bottom: 10px;
+    box-shadow: none;
+  }
+  
+  .gallery-filters-container {
+    justify-content: flex-start !important;
+    overflow-x: auto;
+    padding: 0 15px 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .gallery-filters {
+    background: transparent;
+    border: none;
+    padding: 0;
+    gap: 8px;
+    display: flex;
+    flex-wrap: nowrap; /* Force single row for scroll */
+  }
+  
+  .gallery-filter-btn {
+    background: #f8f6f2;
+    border: 1px solid rgba(200, 164, 107, 0.1);
+    padding: 8px 18px;
+  }
+
+  .gallery-masonry {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: 200px !important;
+    gap: 15px !important;
+  }
+
+  .gallery-item-hover-content { padding: 15px; }
+  .item-title { font-size: 0.9rem; }
+  .lightbox-nav { width: 44px; height: 44px; font-size: 1.4rem; }
+  .lightbox-prev { left: 10px; }
+  .lightbox-next { right: 10px; }
+
 
   /* Hero mobile */
   .hero-split {
