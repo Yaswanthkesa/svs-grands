@@ -96,8 +96,6 @@ export default function GalleryPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lightboxIdx, filtered.length]);
 
-  const imageCount = filtered.filter(i => i.type === 'image').length;
-  const videoCount = filtered.filter(i => i.type === 'video').length;
 
   return (
     <div className="gallery-page">

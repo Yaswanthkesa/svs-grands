@@ -5,7 +5,7 @@ import ReservationBar from '../components/ReservationBar';
 
 // Import Swiper React components and modules
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, FreeMode } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -134,14 +134,12 @@ export default function HomePage() {
   const { openBooking } = useOutletContext<LayoutContext>();
   // ... rest of the component
   const [current, setCurrent] = useState(0);
-  const [prev, setPrev] = useState<number | null>(null);
   const [phase, setPhase] = useState<'idle' | 'exit' | 'enter'>('idle');
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<any>(null);
 
   const goToSlide = (index: number) => {
     if (index === current || phase !== 'idle') return;
     setPhase('exit');
-    setPrev(current);
 
     setTimeout(() => {
       setCurrent(index);
@@ -149,7 +147,6 @@ export default function HomePage() {
         setPhase('enter');
         setTimeout(() => setPhase('idle'), 1000);
       }, 100);
-      setTimeout(() => setPrev(null), 2000);
     }, 900);
   };
 

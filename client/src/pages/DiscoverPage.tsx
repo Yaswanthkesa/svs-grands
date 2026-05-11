@@ -127,7 +127,6 @@ export default function DiscoverPage() {
   const hashIndex = hash ? parseInt(hash.replace('#', '')) : NaN;
   const isDetailsView = !isNaN(hashIndex) && hashIndex >= 0 && hashIndex < discoverData.length;
   const activeIndex = isDetailsView ? hashIndex : 0;
-  const activePlace = discoverData[activeIndex];
   const [displayPlace, setDisplayPlace] = useState(discoverData[activeIndex]);
 
   // Trigger animations on place change or initial entry
