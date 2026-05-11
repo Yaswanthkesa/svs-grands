@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { client, GALLERY_QUERY, urlFor } from '../lib/sanity';
 
 type MediaType = 'image' | 'video';
 type Category = 'all' | 'classic' | 'standard' | 'deluxe' | 'superior' | 'family-comfort' | 'exterior';
@@ -11,7 +11,7 @@ interface GalleryItem {
   poster?: string;
 }
 
-const galleryItems: GalleryItem[] = [
+const defaultGalleryItems: GalleryItem[] = [
   // Classic Room
   { src: '/assets/rooms/classic/1.png', alt: 'Classic Room — View 1', category: 'classic', type: 'image' },
   { src: '/assets/rooms/classic/2.png', alt: 'Classic Room — Washroom', category: 'classic', type: 'image' },
@@ -68,12 +68,36 @@ const categories: { key: Category; label: string }[] = [
 
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
+  const [items, setItems] = useState<GalleryItem[]>(defaultGalleryItems);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const lightboxVideoRef = useRef<HTMLVideoElement | null>(null);
 
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const data = await client.fetch(GALLERY_QUERY);
+        if (data && data.length > 0) {
+          const allItems: GalleryItem[] = [];
+          data.forEach((cat: any) => {
+            if (cat.images) {
+              cat.images.forEach((img: any) => allItems.push({ ...img, category: cat.category }));
+            }
+            if (cat.videos) {
+              cat.videos.forEach((vid: any) => allItems.push({ ...vid, category: cat.category }));
+            }
+          });
+          if (allItems.length > 0) setItems(allItems);
+        }
+      } catch (error) {
+        console.error('Sanity fetch error:', error);
+      }
+    };
+    fetchGallery();
+  }, []);
+
   const filtered = activeCategory === 'all'
-    ? galleryItems
-    : galleryItems.filter(item => item.category === activeCategory);
+    ? items
+    : items.filter(item => item.category === activeCategory);
 
   const openLightbox = (idx: number) => setLightboxIdx(idx);
   const closeLightbox = () => {
@@ -123,8 +147,8 @@ export default function GalleryPage() {
               <div className="gallery-filters">
                 {categories.map(cat => {
                   const count = cat.key === 'all' 
-                    ? galleryItems.length 
-                    : galleryItems.filter(i => i.category === cat.key).length;
+                    ? items.length 
+                    : items.filter(i => i.category === cat.key).length;
                   return (
                     <button
                       key={cat.key}

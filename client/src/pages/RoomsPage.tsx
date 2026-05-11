@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { calculatePrice, ROOM_NAMES, NORMAL_RATES } from '../utils/pricing';
 import type { RoomId } from '../utils/pricing';
+import { client, ROOMS_QUERY, urlFor } from '../lib/sanity';
 import './RoomsPage.css';
 
 const getRoomImage = (id: string) => {
@@ -23,7 +24,7 @@ const getRoomDescription = (id: string) => {
   return 'Premium climate-controlled rooms for a comfortable and relaxing stay. Available in both TV and non-TV configurations to suit your preference.';
 };
 
-const roomsData = Object.keys(ROOM_NAMES).map((key) => {
+const defaultRoomsData = Object.keys(ROOM_NAMES).map((key) => {
   const id = key as RoomId;
   const isFamily = id === 'DELUXE' || id === 'SUPERIOR' || id === 'FAMILY_COMFORT';
   const isAC = id === 'CLASSIC' || id === 'DELUXE' || id === 'SUPERIOR';
@@ -54,6 +55,7 @@ export default function RoomsPage() {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   // States
+  const [rooms, setRooms] = useState(defaultRoomsData);
   const [checkInDate] = useState(today);
   const [checkOutDate] = useState(tomorrow.toISOString().split('T')[0]);
   const [guests] = useState(2);
@@ -68,9 +70,33 @@ export default function RoomsPage() {
   // Hash Routing Logic
   const hash = location.hash;
   const hashIndex = hash ? parseInt(hash.replace('#', '')) : NaN;
-  const isDetailsView = !isNaN(hashIndex) && hashIndex >= 0 && hashIndex < roomsData.length;
+  const isDetailsView = !isNaN(hashIndex) && hashIndex >= 0 && hashIndex < rooms.length;
   const activeRoomIndex = isDetailsView ? hashIndex : 0;
-  const activeRoom = roomsData[activeRoomIndex];
+  const activeRoom = rooms[activeRoomIndex];
+
+  // Fetch Sanity Content
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const data = await client.fetch(ROOMS_QUERY);
+        if (data && data.length > 0) {
+          // Map Sanity data to our frontend structure
+          const mappedRooms = data.map((r: any) => ({
+            id: r.id || r._id,
+            title: r.name,
+            bedTypes: r.occupancy || 'Double Bed',
+            image: r.coverImage || getRoomImage(r.id),
+            description: r.shortDescription || r.fullDescription,
+            amenities: r.amenities || []
+          }));
+          setRooms(mappedRooms);
+        }
+      } catch (error) {
+        console.error('Sanity fetch error:', error);
+      }
+    };
+    fetchRooms();
+  }, []);
 
   useEffect(() => {
     try {
@@ -79,8 +105,8 @@ export default function RoomsPage() {
       
       const newPricing: Record<string, { price: number; error?: string }> = {};
       
-      roomsData.forEach(room => {
-        const result = calculatePrice(ci, co, room.id, guests);
+      rooms.forEach(room => {
+        const result = calculatePrice(ci, co, room.id as RoomId, guests);
         newPricing[room.id] = {
           price: result.totalPrice,
           error: result.error
@@ -90,7 +116,7 @@ export default function RoomsPage() {
     } catch {
       // Intentionally empty
     }
-  }, [checkInDate, checkOutDate, guests]);
+  }, [checkInDate, checkOutDate, guests, rooms]);
 
   // Trigger animations on room change or view entry
   useEffect(() => {
@@ -127,7 +153,7 @@ export default function RoomsPage() {
       setPrevImage(null);
       lastImageRef.current = null;
     }
-  }, [isDetailsView, activeRoomIndex]);
+  }, [isDetailsView, activeRoomIndex, activeRoom.image]);
 
   const handleBookNow = (roomId: string) => {
     navigate(`/checkout?roomType=${roomId}&checkIn=${checkInDate}&checkOut=${checkOutDate}&guests=${guests}`);
@@ -181,7 +207,7 @@ export default function RoomsPage() {
                 </p>
               </div>
               <div className="rooms-grid">
-                {roomsData.map((room, idx) => (
+                {rooms.map((room, idx) => (
                   <div 
                     key={room.id} 
                     className={`room-grid-card ${idx === 0 ? 'featured' : 'standard'}`} 
@@ -204,7 +230,7 @@ export default function RoomsPage() {
             <h3 className="rd-sidebar-title">Rooms</h3>
 
             <div className="rd-thumbs-wrap">
-              {roomsData.map((room, idx) => (
+              {rooms.map((room, idx) => (
                 <div
                   key={room.id}
                   className={`rd-thumb ${idx === activeRoomIndex ? 'rd-thumb--active' : ''} ${animPhase === 'animating' ? 'thumb-fade-in' : ''}`}
@@ -218,6 +244,7 @@ export default function RoomsPage() {
                 </div>
               ))}
             </div>
+
 
             <button className="rd-back-btn" onClick={goToListing}>← All Rooms</button>
           </aside>

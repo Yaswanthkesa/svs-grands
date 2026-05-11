@@ -1,10 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { client, SETTINGS_QUERY } from '../lib/sanity';
 
 export default function ContactPage() {
   const [fromLocation, setFromLocation] = useState('');
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await client.fetch(SETTINGS_QUERY);
+        if (data) setSettings(data);
+      } catch (error) {
+        console.error('Sanity settings fetch error:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
   
   const handleDirections = () => {
-    const destination = "SVS Grands, Vadapalli, Andhra Pradesh 533237";
+    const destination = settings?.address || "SVS Grands, Vadapalli, Andhra Pradesh 533237";
     const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(fromLocation)}&destination=${encodeURIComponent(destination)}&travelmode=driving`;
     window.open(url, '_blank');
   };
@@ -32,11 +46,11 @@ export default function ContactPage() {
   const handleSaveContact = () => {
     const vcard = `BEGIN:VCARD
 VERSION:3.0
-FN:SVS Grands
-ORG:SVS Grands
-TEL;TYPE=WORK,VOICE:+918341199779
-EMAIL;TYPE=PREF,INTERNET:svsgrands@gmail.com
-ADR;TYPE=WORK:;;Opp. Grama Panchayathi Office, Lolla, Vadapalli;Konaseema;AP;533237;India
+FN:${settings?.hotelName || "SVS Grands"}
+ORG:${settings?.hotelName || "SVS Grands"}
+TEL;TYPE=WORK,VOICE:${settings?.phoneNumber || "+918341199779"}
+EMAIL;TYPE=PREF,INTERNET:${settings?.email || "svsgrands@gmail.com"}
+ADR;TYPE=WORK:;;${settings?.address || "Opp. Grama Panchayathi Office, Lolla, Vadapalli;Konaseema;AP;533237;India"}
 URL:https://svsgrands.com
 END:VCARD`;
 
@@ -86,7 +100,7 @@ END:VCARD`;
             <div className="direction-row">
               <i className="fas fa-location-dot dir-flag"></i>
               <div className="direction-input-field prefilled">
-                <input type="text" value="SVS Grands, Vadapalli" disabled />
+                <input type="text" value={`${settings?.hotelName || "SVS Grands"}, Vadapalli`} disabled />
               </div>
             </div>
           </div>
@@ -109,19 +123,19 @@ END:VCARD`;
 
               <div className="info-item">
                 <label>The Address</label>
-                <p>Opp. Grama Panchayathi Office, Lolla, Vadapalli, Konaseema, AP - 533237</p>
+                <p>{settings?.address || "Opp. Grama Panchayathi Office, Lolla, Vadapalli, Konaseema, AP - 533237"}</p>
               </div>
 
               <div className="info-item">
                 <label>Direct Contact</label>
-                <a href="tel:+918341199779">+91 83411 99779</a>
-                <a href="https://wa.me/918341199779" target="_blank" rel="noopener noreferrer">WhatsApp Chat</a>
+                <a href={`tel:${settings?.phoneNumber || "+918341199779"}`}>{settings?.phoneNumber || "+91 83411 99779"}</a>
+                <a href={settings?.whatsappLink || "https://wa.me/918341199779"} target="_blank" rel="noopener noreferrer">WhatsApp Chat</a>
               </div>
 
               <div className="info-item">
                 <label>Online Reach</label>
-                <a href="mailto:svsgrands@gmail.com">svsgrands@gmail.com</a>
-                <a href="https://www.instagram.com/svs_grands_vadapalli" target="_blank" rel="noopener noreferrer">Instagram</a>
+                <a href={`mailto:${settings?.email || "svsgrands@gmail.com"}`}>{settings?.email || "svsgrands@gmail.com"}</a>
+                <a href={settings?.instagramLink || "https://www.instagram.com/svs_grands_vadapalli"} target="_blank" rel="noopener noreferrer">Instagram</a>
               </div>
 
               <button className="btn-save-contact" onClick={handleSaveContact}>

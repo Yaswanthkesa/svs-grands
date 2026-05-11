@@ -1,10 +1,25 @@
 import { Outlet, useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { client, SETTINGS_QUERY } from '../lib/sanity';
 import Navbar from './Navbar';
 import FloatingContact from './FloatingContact';
 import './Footer.css';
 
 export default function Layout() {
   const navigate = useNavigate();
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await client.fetch(SETTINGS_QUERY);
+        if (data) setSettings(data);
+      } catch (error) {
+        console.error('Sanity settings fetch error:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const openBooking = (roomType?: string) => {
     const params = new URLSearchParams();
@@ -18,7 +33,7 @@ export default function Layout() {
 
   return (
     <>
-      <Navbar />
+      <Navbar settings={settings} />
       <main className="page-content">
         <Outlet context={{ openBooking }} />
       </main>
@@ -29,12 +44,11 @@ export default function Layout() {
             {/* Branding & Description */}
             <div className="footer-brand">
               <Link to="/" className="footer-logo-wrap">
-                <img src="/assets/logo.png" alt="SVS Grands" className="footer-logo" />
-                <span className="footer-logo-text">SVS Grands</span>
+                <img src={settings?.logo || "/assets/logo.png"} alt={settings?.hotelName || "SVS Grands"} className="footer-logo" />
+                <span className="footer-logo-text">{settings?.hotelName || "SVS Grands"}</span>
               </Link>
               <p className="footer-desc">
-                SVS Grands offers peaceful and comfortable stays near Sri Venkateswara Swamy Temple, Vadapalli — 
-                designed for pilgrims, families, and travelers seeking comfort and convenience.
+                {settings?.footerDescription || "SVS Grands offers peaceful and comfortable stays near Sri Venkateswara Swamy Temple, Vadapalli — designed for pilgrims, families, and travelers seeking comfort and convenience."}
               </p>
             </div>
 
@@ -53,22 +67,22 @@ export default function Layout() {
             {/* Contact Details */}
             <div className="footer-contact">
               <h4>Contact</h4>
-              <p>Opp. Grama Panchayathi Office,<br />Lolla, Vadapalli, AP - 533237</p>
-              <a href="tel:+918341199779" className="footer-link">+91 83411 99779</a>
-              <a href="mailto:svsgrands@gmail.com" className="footer-link">svsgrands@gmail.com</a>
+              <p>{settings?.address || "Opp. Grama Panchayathi Office,\nLolla, Vadapalli, AP - 533237"}</p>
+              <a href={`tel:${settings?.phoneNumber || "+918341199779"}`} className="footer-link">{settings?.phoneNumber || "+91 83411 99779"}</a>
+              <a href={`mailto:${settings?.email || "svsgrands@gmail.com"}`} className="footer-link">{settings?.email || "svsgrands@gmail.com"}</a>
             </div>
 
             {/* Social Media */}
             <div className="footer-social">
               <h4>Follow Us</h4>
               <div className="social-icons">
-                <a href="https://www.instagram.com/svs_grands_vadapalli" target="_blank" rel="noopener noreferrer">
+                <a href={settings?.instagramLink || "https://www.instagram.com/svs_grands_vadapalli"} target="_blank" rel="noopener noreferrer">
                   <i className="fab fa-instagram"></i>
                 </a>
-                <a href="https://www.facebook.com/svsgrands" target="_blank" rel="noopener noreferrer">
+                <a href={settings?.facebookLink || "https://www.facebook.com/svsgrands"} target="_blank" rel="noopener noreferrer">
                   <i className="fab fa-facebook-f"></i>
                 </a>
-                <a href="https://maps.app.goo.gl/bitA8qQ6YdLP5PCc9?g_st=ac" target="_blank" rel="noopener noreferrer">
+                <a href={settings?.googleMapsLink || "https://maps.app.goo.gl/bitA8qQ6YdLP5PCc9?g_st=ac"} target="_blank" rel="noopener noreferrer">
                   <i className="fas fa-map-marker-alt"></i>
                 </a>
               </div>
@@ -77,7 +91,7 @@ export default function Layout() {
 
           <div className="footer-bottom">
             <div className="footer-copyright">
-              © {new Date().getFullYear()} SVS Grands Boutique Hotel. All rights reserved.
+              © {new Date().getFullYear()} {settings?.copyrightText || "SVS Grands Boutique Hotel. All rights reserved."}
             </div>
             <div className="footer-legal">
               <Link to="/terms">Terms & Conditions</Link>
@@ -88,7 +102,7 @@ export default function Layout() {
       </footer>
 
       {/* Modern Interactive Support Widget */}
-      <FloatingContact />
+      <FloatingContact settings={settings} />
     </>
   );
 }

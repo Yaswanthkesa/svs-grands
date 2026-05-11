@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import './FloatingContact.css';
 
-export default function FloatingContact() {
+export default function FloatingContact({ settings }: { settings: any }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const whatsappLink = "https://wa.me/918341199779?text=Hello%20SVS%20Grands,%20I'm%20interested%20in%20booking%20a%20stay.";
+  const whatsappLink = settings?.whatsappLink || "https://wa.me/918341199779?text=Hello%20SVS%20Grands,%20I'm%20interested%20in%20booking%20a%20stay.";
 
   return (
     <div className={`floating-contact-wrapper ${isOpen ? 'is-open' : ''}`}>
@@ -12,7 +12,7 @@ export default function FloatingContact() {
         {/* Call Button */}
         <div className="floating-item-wrap">
           <span className="floating-tooltip">Call Now</span>
-          <a href="tel:+918341199779" className="floating-item call-btn">
+          <a href={`tel:${settings?.phoneNumber || "+918341199779"}`} className="floating-item call-btn">
             <i className="fas fa-phone"></i>
           </a>
         </div>

@@ -1,6 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { client, HOMEPAGE_QUERY, urlFor } from '../lib/sanity';
 import ReservationBar from '../components/ReservationBar';
 
 // Import Swiper React components and modules
@@ -15,7 +13,7 @@ interface LayoutContext {
   openBooking: (roomType?: string) => void;
 }
 
-const slides = [
+const defaultSlides = [
   {
     boldText: 'A COZY FAMILY STAY',
     normalText: 'NEAR KONASEEMA TIRUPATHI TEMPLE.',
@@ -48,7 +46,7 @@ const slides = [
   },
 ];
 
-const roomCategories = [
+const defaultRoomCategories = [
   {
     id: 'STANDARD',
     name: 'Standard Room',
@@ -91,7 +89,7 @@ const roomCategories = [
   },
 ];
 
-const features = [
+const defaultFeatures = [
   { 
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -132,13 +130,17 @@ const features = [
 
 export default function HomePage() {
   const { openBooking } = useOutletContext<LayoutContext>();
-  // ... rest of the component
   const [current, setCurrent] = useState(0);
   const [phase, setPhase] = useState<'idle' | 'exit' | 'enter'>('idle');
   const timerRef = useRef<any>(null);
 
+  // Dynamic States
+  const [slides, setSlides] = useState(defaultSlides);
+  const [aboutContent, setAboutContent] = useState('Located near the famous Sri Venkateswara Swamy Temple, Vadapalli, SVS Grands offers a peaceful and comfortable stay experience for pilgrims, families, and travelers. Designed with modern comfort and traditional hospitality, our rooms provide a relaxing atmosphere with convenient amenities, flexible stay options, and easy access to nearby spiritual destinations.');
+  const [featuresList, setFeaturesList] = useState(defaultFeatures);
+
   const goToSlide = (index: number) => {
-    if (index === current || phase !== 'idle') return;
+    if (index === current || phase !== 'idle' || !slides[index]) return;
     setPhase('exit');
 
     setTimeout(() => {
@@ -151,14 +153,46 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    if (phase !== 'idle') return;
+    const fetchHome = async () => {
+      try {
+        const data = await client.fetch(HOMEPAGE_QUERY);
+        if (data) {
+          if (data.heroMedia && data.heroMedia.length > 0) {
+            const mappedSlides = data.heroMedia.map((m: any) => ({
+              boldText: data.heroHeading || 'WELCOME TO',
+              normalText: data.heroSubheading || 'SVS GRANDS',
+              bgImage: m.image || m.fallbackImage || '/assets/BackgroundPC.jpg',
+              fgImage: m.image || m.fallbackImage || '/assets/BackgroundPC.jpg',
+              thumbs: [m.image || '/assets/rooms/classic/1.png', m.fallbackImage || '/assets/rooms/standard/2.png']
+            }));
+            setSlides(mappedSlides);
+          }
+          if (data.aboutContent) setAboutContent(data.aboutContent);
+          if (data.features && data.features.length > 0) {
+            const mappedFeatures = data.features.map((f: any, i: number) => ({
+              icon: defaultFeatures[i]?.icon || defaultFeatures[0].icon,
+              title: f.title,
+              desc: f.description
+            }));
+            setFeaturesList(mappedFeatures);
+          }
+        }
+      } catch (error) {
+        console.error('Sanity fetch error:', error);
+      }
+    };
+    fetchHome();
+  }, []);
+
+  useEffect(() => {
+    if (phase !== 'idle' || slides.length === 0) return;
     timerRef.current = setTimeout(() => {
       goToSlide((current + 1) % slides.length);
     }, 5000);
     return () => clearTimeout(timerRef.current);
-  }, [current, phase]);
+  }, [current, phase, slides.length]);
 
-  const slide = slides[current];
+  const slide = slides[current] || defaultSlides[0];
   const isVisible = phase === 'idle' || phase === 'enter';
 
   return (
@@ -213,7 +247,7 @@ export default function HomePage() {
                 <span className="ar-label">WELCOME TO SVS GRANDS</span>
                 <h2 className="ar-heading">The Best Stay Near Konaseema Tirupathi</h2>
                 <p className="ar-desc">
-                  Located near the famous Sri Venkateswara Swamy Temple, Vadapalli, SVS Grands offers a peaceful and comfortable stay experience for pilgrims, families, and travelers. Designed with modern comfort and traditional hospitality, our rooms provide a relaxing atmosphere with convenient amenities, flexible stay options, and easy access to nearby spiritual destinations.
+                  {aboutContent}
                 </p>
               </div>
 
@@ -295,14 +329,14 @@ export default function HomePage() {
           </div>
 
           <div className="wc-editorial-wrap">
-            {features.map((f, i) => (
+            {featuresList.map((f, i) => (
               <div className="wc-editorial-item" key={i}>
                 <div className="wc-editorial-icon">{f.icon}</div>
                 <div className="wc-editorial-content">
                   <h3>{f.title}</h3>
                   <p>{f.desc}</p>
                 </div>
-                {i < features.length - 1 && <div className="wc-editorial-divider"></div>}
+                {i < featuresList.length - 1 && <div className="wc-editorial-divider"></div>}
               </div>
             ))}
           </div>

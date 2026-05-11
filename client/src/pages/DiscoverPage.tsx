@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { client, PLACES_QUERY, urlFor } from '../lib/sanity';
 import './DiscoverPage.css';
 
-const discoverData = [
+const defaultDiscoverData = [
   {
     id: 'vadapalli',
     title: 'వడపల్లి — Sri Venkateswara Swamy Temple',
@@ -117,7 +116,8 @@ export default function DiscoverPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Animation States
+  // States
+  const [places, setPlaces] = useState(defaultDiscoverData);
   const [animPhase, setAnimPhase] = useState<'idle' | 'reset' | 'animating'>('idle');
   const [prevImage, setPrevImage] = useState<string | null>(null);
   const lastImageRef = useRef<string | null>(null);
@@ -125,9 +125,33 @@ export default function DiscoverPage() {
   // Hash Routing Logic
   const hash = location.hash;
   const hashIndex = hash ? parseInt(hash.replace('#', '')) : NaN;
-  const isDetailsView = !isNaN(hashIndex) && hashIndex >= 0 && hashIndex < discoverData.length;
+  const isDetailsView = !isNaN(hashIndex) && hashIndex >= 0 && hashIndex < places.length;
   const activeIndex = isDetailsView ? hashIndex : 0;
-  const [displayPlace, setDisplayPlace] = useState(discoverData[activeIndex]);
+  const [displayPlace, setDisplayPlace] = useState(places[activeIndex]);
+
+  // Fetch Sanity Content
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const data = await client.fetch(PLACES_QUERY);
+        if (data && data.length > 0) {
+          const mappedPlaces = data.map((p: any) => ({
+            id: p.id || p._id,
+            title: p.name,
+            image: p.featuredImage || p.gallery?.[0] || '/assets/BackgroundPC.jpg',
+            description: p.description,
+            distance: p.distance,
+            timingLabel: 'Timings',
+            timings: 'Contact for timings'
+          }));
+          setPlaces(mappedPlaces);
+        }
+      } catch (error) {
+        console.error('Sanity fetch error:', error);
+      }
+    };
+    fetchPlaces();
+  }, []);
 
   // Trigger animations on place change or initial entry
   useEffect(() => {
@@ -137,22 +161,22 @@ export default function DiscoverPage() {
 
     // 2. Set up background bridging
     if (lastImageRef.current) {
-      // Use the image we are currently seeing as the bridge
       setPrevImage(lastImageRef.current);
     } else {
-      // Use the known superior room image as a starting point
       setPrevImage('/assets/BackgroundPC.jpg');
     }
     
     // 3. Update the content and start animation AFTER the reset is settled
     const timer = setTimeout(() => {
-      setDisplayPlace(discoverData[activeIndex]);
-      setAnimPhase('animating');
-      lastImageRef.current = discoverData[activeIndex].image;
+      if (places[activeIndex]) {
+        setDisplayPlace(places[activeIndex]);
+        setAnimPhase('animating');
+        lastImageRef.current = places[activeIndex].image;
+      }
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [activeIndex]);
+  }, [activeIndex, places]);
 
   const openPlace = (index: number) => {
     if (index === activeIndex) return;
@@ -183,7 +207,7 @@ export default function DiscoverPage() {
           <h3 className="discover-sidebar-title">Nearby Places</h3>
 
           <div className="discover-thumbs-wrap">
-            {discoverData.map((place, idx) => (
+            {places.map((place, idx) => (
               <div
                 key={place.id}
                 className={`discover-thumb ${idx === activeIndex ? 'discover-thumb--active' : ''} ${animPhase === 'animating' ? 'thumb-fade-in' : ''}`}
