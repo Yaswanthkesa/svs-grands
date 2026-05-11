@@ -63,7 +63,7 @@ export default function RoomsPage() {
   const [animPhase, setAnimPhase] = useState<'idle' | 'reset' | 'animating'>('idle');
   const [prevImage, setPrevImage] = useState<string | null>(null);
   const lastImageRef = useRef<string | null>(null);
-  const LISTING_BG = '/assets/rooms/superior/1.png';
+  const LISTING_BG = '/assets/BackgroundPC.jpg';
 
   // Hash Routing Logic
   const hash = location.hash;
@@ -154,7 +154,7 @@ export default function RoomsPage() {
           {prevImage && (
             <div 
               className="rooms-details-bg" 
-              style={{ backgroundImage: `url(${prevImage})`, opacity: 1, transform: 'scale(1)', filter: 'none', zIndex: 0 }} 
+              style={{ backgroundImage: `url('/assets/BackgroundPC.jpg')`, opacity: 1, transform: 'scale(1)', filter: 'none', zIndex: 0 }} 
             />
           )}
 

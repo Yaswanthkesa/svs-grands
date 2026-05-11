@@ -141,7 +141,7 @@ export default function DiscoverPage() {
       setPrevImage(lastImageRef.current);
     } else {
       // Use the known superior room image as a starting point
-      setPrevImage('/assets/discover/konaseema.png');
+      setPrevImage('/assets/BackgroundPC.jpg');
     }
     
     // 3. Update the content and start animation AFTER the reset is settled
@@ -167,7 +167,7 @@ export default function DiscoverPage() {
         {prevImage && (
           <div 
             className="discover-details-bg" 
-            style={{ backgroundImage: `url(${prevImage})`, opacity: 1, transform: 'scale(1)', filter: 'none', zIndex: 0 }} 
+            style={{ backgroundImage: `url('/assets/BackgroundPC.jpg')`, opacity: 1, transform: 'scale(1)', filter: 'none', zIndex: 0 }} 
           />
         )}
 
