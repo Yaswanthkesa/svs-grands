@@ -1,98 +1,225 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import './DiscoverPage.css';
 
-const attractions = [
+const discoverData = [
   {
-    icon: '🛕',
-    name: 'Sri Venkateswara Swamy Temple',
-    distance: '~400 m',
-    travelTime: '5 min walk',
-    description: 'Known as "Konaseema Tirupathi", this ancient temple dedicated to Lord Venkateswara is the primary pilgrimage destination in the region. Thousands of devotees visit this sacred temple every year.',
+    id: 'vadapalli',
+    title: 'వడపల్లి — Sri Venkateswara Swamy Temple',
+    image: '/assets/discover/vadapalli.jpg',
+    description: 'వడపల్లి is a famous spiritual destination known for the Sri Venkateswara Swamy Temple surrounded by peaceful Konaseema scenery.',
+    distance: 'Approx. 1 km',
+    timingLabel: 'Temple Timings',
+    timings: '5:30 AM – 12:00 PM\n4:30 PM – 8:00 PM'
   },
   {
-    icon: '🏛️',
-    name: 'Ryali Jaganmohini Kesava Swamy Temple',
-    distance: '~14 km',
-    travelTime: '25 min drive',
-    description: 'Famous for its stunning single black stone idol of Lord Vishnu. A must-visit spiritual site in the Konaseema region, renowned for its architectural beauty.',
+    id: 'ryali',
+    title: 'ర్యాలి — Jaganmohini Kesava Swamy Temple',
+    image: '/assets/discover/Rayali.jpg',
+    description: 'ర్యాలి is one of the most famous spiritual destinations near Vadapalli, known for the unique Jaganmohini Kesava Swamy Temple.',
+    distance: 'Approx. 12 km',
+    timingLabel: 'Temple Timings',
+    timings: '6:00 AM – 12:00 PM\n4:00 PM – 8:00 PM'
   },
   {
-    icon: '🕉️',
-    name: 'Draksharamam Temple',
-    distance: '~25 km',
-    travelTime: '40 min drive',
-    description: 'One of the five sacred Pancharama Kshetras — an ancient Shiva temple known for its magnificent architecture and spiritual significance.',
+    id: 'atreyapuram',
+    title: 'ఆత్రేయపురం — Home of Pootharekulu',
+    image: '/assets/discover/atreyapuram.jpg',
+    description: 'ఆత్రేయపురం is world-famous for traditional Andhra Pootharekulu sweets and beautiful Konaseema surroundings.',
+    distance: 'Approx. 18 km',
+    timingLabel: 'Best Visiting Time',
+    timings: '8:00 AM – 9:00 PM'
   },
   {
-    icon: '🌊',
-    name: 'Godavari River & Scenic Views',
-    distance: '~5 km',
-    travelTime: '10 min drive',
-    description: 'Experience the lush paddy fields, swaying coconut groves, and the serene banks of the mighty Godavari river.',
+    id: 'ravulapalem',
+    title: 'రావులపాలెం — Gateway of Konaseema',
+    image: '/assets/discover/ravulapalem.jpg',
+    description: 'రావులపాలెం is popularly called the Gateway of Konaseema because of its greenery, coconut plantations, and lively town atmosphere.',
+    distance: 'Approx. 15 km',
+    timingLabel: 'Best Visiting Time',
+    timings: 'Morning and evening hours'
   },
   {
-    icon: '🚤',
-    name: 'Dindi Backwaters',
-    distance: '~20 km',
-    travelTime: '35 min drive',
-    description: 'Enjoy backwater boating on the Godavari delta — a tranquil and picturesque experience amidst nature\'s beauty.',
+    id: 'mandapalli',
+    title: 'మందపల్లి — Sri Mandeswara Swamy Temple',
+    image: '/assets/discover/mandapalli.png',
+    description: 'మందపల్లి is a highly visited pilgrimage destination known for the famous Sri Mandeswara Swamy Temple dedicated to Lord Shani.',
+    distance: 'Approx. 20 km',
+    timingLabel: 'Temple Timings',
+    timings: '5:00 AM – 1:00 PM\n4:00 PM – 8:30 PM'
   },
   {
-    icon: '🍬',
-    name: 'Atreyapuram — Pootharekulu',
-    distance: '~10 km',
-    travelTime: '18 min drive',
-    description: 'Visit the birthplace of the famous Andhra sweet "Pootharekulu" — paper-thin rice sheets filled with jaggery and ghee.',
+    id: 'vanapalli',
+    title: 'వానపల్లి — Konaseema Village Beauty',
+    image: '/assets/discover/vanapalli.jpg',
+    description: 'వానపల్లి is known for peaceful village beauty, coconut gardens, and authentic Konaseema atmosphere.',
+    distance: 'Approx. 10 km',
+    timingLabel: 'Best Visiting Time',
+    timings: 'Early morning and sunset hours'
   },
+  {
+    id: 'annavaram',
+    title: 'అన్నవరం — Sri Satyanarayana Swamy Temple',
+    image: '/assets/discover/annavaram.png',
+    description: 'అన్నవరం is one of the most famous pilgrimage centers in Andhra Pradesh located on Ratnagiri Hill.',
+    distance: 'Approx. 75 km',
+    timingLabel: 'Temple Timings',
+    timings: '4:00 AM – 9:00 PM'
+  },
+  {
+    id: 'draksharamam',
+    title: 'ద్రాక్షారామం — Bhimeswara Swamy Temple',
+    image: '/assets/discover/draksharamam.png',
+    description: 'ద్రాక్షారామం is one of the sacred Pancharama Kshetrams dedicated to Lord Shiva.',
+    distance: 'Approx. 35 km',
+    timingLabel: 'Temple Timings',
+    timings: '6:00 AM – 12:00 PM\n4:00 PM – 8:00 PM'
+  },
+  {
+    id: 'kotipalli',
+    title: 'కోటిపల్లి — Someswara Swamy Temple',
+    image: '/assets/discover/kotipalli.png',
+    description: 'కోటిపల్లి is a calm riverside spiritual destination known for the Someswara Swamy Temple and scenic Godavari surroundings.',
+    distance: 'Approx. 30 km',
+    timingLabel: 'Temple Timings',
+    timings: '6:00 AM – 12:00 PM\n5:00 PM – 8:00 PM'
+  },
+  {
+    id: 'appanapalli',
+    title: 'అప్పనపల్లి — Bala Balaji Temple',
+    image: '/assets/discover/appanapalli.png',
+    description: 'అప్పనపల్లి is a popular devotional destination known for the Sri Bala Balaji Temple located amidst Konaseema greenery.',
+    distance: 'Approx. 45 km',
+    timingLabel: 'Temple Timings',
+    timings: '5:00 AM – 12:30 PM\n4:30 PM – 8:30 PM'
+  },
+  {
+    id: 'antarvedi',
+    title: 'అంతర్వేది — Lakshmi Narasimha Swamy Temple',
+    image: '/assets/discover/antarvedi.png',
+    description: 'అంతర్వేది is a beautiful spiritual and coastal destination where the Godavari river meets the Bay of Bengal.',
+    distance: 'Approx. 70 km',
+    timingLabel: 'Temple Timings',
+    timings: '5:30 AM – 12:30 PM\n4:00 PM – 8:00 PM'
+  },
+  {
+    id: 'konaseema',
+    title: 'కోనసీమ Coconut Roads & Backwaters',
+    image: '/assets/discover/konaseema.png',
+    description: 'Konaseema is famous for its scenic coconut tree roads, canals, lush greenery, and peaceful village landscapes.',
+    distance: 'Accessible throughout surrounding region',
+    timingLabel: 'Best Visiting Time',
+    timings: 'Early morning, evening, and monsoon season'
+  }
 ];
 
 export default function DiscoverPage() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const active = attractions[activeIndex];
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Animation States
+  const [animPhase, setAnimPhase] = useState<'idle' | 'reset' | 'animating'>('idle');
+  const [prevImage, setPrevImage] = useState<string | null>(null);
+  const lastImageRef = useRef<string | null>(null);
+
+  // Hash Routing Logic
+  const hash = location.hash;
+  const hashIndex = hash ? parseInt(hash.replace('#', '')) : NaN;
+  const isDetailsView = !isNaN(hashIndex) && hashIndex >= 0 && hashIndex < discoverData.length;
+  const activeIndex = isDetailsView ? hashIndex : 0;
+  const activePlace = discoverData[activeIndex];
+  const [displayPlace, setDisplayPlace] = useState(discoverData[activeIndex]);
+
+  // Trigger animations on place change or initial entry
+  useEffect(() => {
+    // 1. Reset state synchronously to hide current content
+    setAnimPhase('reset');
+    window.scrollTo(0, 0);
+
+    // 2. Set up background bridging
+    if (lastImageRef.current) {
+      // Use the image we are currently seeing as the bridge
+      setPrevImage(lastImageRef.current);
+    } else {
+      // Use the known superior room image as a starting point
+      setPrevImage('/assets/discover/konaseema.png');
+    }
+    
+    // 3. Update the content and start animation AFTER the reset is settled
+    const timer = setTimeout(() => {
+      setDisplayPlace(discoverData[activeIndex]);
+      setAnimPhase('animating');
+      lastImageRef.current = discoverData[activeIndex].image;
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [activeIndex]);
+
+  const openPlace = (index: number) => {
+    if (index === activeIndex) return;
+    navigate(`/discover-vadapalli#${index}`);
+  };
 
   return (
-    <div className="discover-page">
-      {/* Page Header */}
-      <div className="page-header">
-        <div className="container">
-          <h1 className="page-header-title">Discover Vadapalli</h1>
-          <div className="page-header-ornament">
-            <span /><span /><span />
-          </div>
-          <p className="page-header-subtitle">
-            Explore the spiritual and natural wonders of Konaseema — all just a short drive from SVS Grands.
-          </p>
-        </div>
-      </div>
+    <div className={`discover-page-container phase-${animPhase}`}>
+      
+      {/* Background Layer */}
+      <>
+        {prevImage && (
+          <div 
+            className="discover-details-bg" 
+            style={{ backgroundImage: `url(${prevImage})`, opacity: 1, transform: 'scale(1)', filter: 'none', zIndex: 0 }} 
+          />
+        )}
 
-      {/* Attraction Viewer — Sidebar + Content */}
-      <div className="discover-viewer">
+        <div 
+          className={`discover-details-bg ${animPhase === 'animating' ? 'bg-reveal' : ''}`} 
+          style={{ backgroundImage: `url(${displayPlace.image})`, zIndex: 1 }} 
+        />
+      </>
+
+      <div className="discover-details-view">
         {/* Left Sidebar */}
-        <div className="discover-sidebar">
-          <h3 className="discover-sidebar-title">Places to Visit</h3>
-          {attractions.map((a, i) => (
-            <div
-              key={i}
-              className={`discover-sidebar-item ${i === activeIndex ? 'active' : ''}`}
-              onClick={() => setActiveIndex(i)}
-            >
-              <span className="discover-sidebar-icon">{a.icon}</span>
-              <span className="discover-sidebar-label">{a.name}</span>
-            </div>
-          ))}
-        </div>
+        <aside className={`discover-sidebar ${animPhase === 'animating' ? 'sidebar-slide-in' : ''}`}>
+          <h3 className="discover-sidebar-title">Nearby Places</h3>
 
-        {/* Main Content */}
-        <div className="discover-main">
-          <div className="discover-main-icon">{active.icon}</div>
-          <h2 className="discover-main-title">{active.name}</h2>
-          <div className="discover-main-distance">
-            <span>📍 {active.distance}</span>
-            <span>·</span>
-            <span>🕐 {active.travelTime}</span>
+          <div className="discover-thumbs-wrap">
+            {discoverData.map((place, idx) => (
+              <div
+                key={place.id}
+                className={`discover-thumb ${idx === activeIndex ? 'discover-thumb--active' : ''} ${animPhase === 'animating' ? 'thumb-fade-in' : ''}`}
+                onClick={() => openPlace(idx)}
+                style={{ animationDelay: animPhase === 'animating' ? `${0.4 + idx * 0.1}s` : '0s' }}
+              >
+                <img src={place.image} alt={place.title} />
+                <div className="discover-thumb-overlay">
+                  <span>{place.title.split('—')[0].trim()}</span>
+                </div>
+              </div>
+            ))}
           </div>
-          <p className="discover-main-desc">{active.description}</p>
-          <div className="discover-main-tip">
-            <strong>💡 Travel Tip:</strong> SVS Grands is ideally located near all major Konaseema attractions. Ask at the front desk for local transport recommendations.
+        </aside>
+
+        {/* Content Panel */}
+        <div className={`discover-content-panel ${animPhase === 'animating' ? 'panel-slide-in' : ''}`}>
+          <h1 className={`discover-title stagger-1 ${displayPlace.title.length > 30 ? 'title-long' : ''}`}>
+            {displayPlace.title}
+          </h1>
+
+          <div className="discover-divider stagger-2"></div>
+
+          <p className="discover-description stagger-3">{displayPlace.description}</p>
+
+          <div className="discover-info-grid stagger-4">
+            <div className="discover-info-item">
+              <h4>{displayPlace.timingLabel}</h4>
+              <p style={{ whiteSpace: 'pre-line' }}>{displayPlace.timings}</p>
+            </div>
+            
+            <div className="discover-info-item">
+              <h4>Distance from SVS Grands</h4>
+              <p>{displayPlace.distance}</p>
+            </div>
           </div>
         </div>
       </div>

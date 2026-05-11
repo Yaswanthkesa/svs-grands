@@ -44,6 +44,15 @@ export default function Navbar() {
     { to: '/contact', label: 'Contact Us' },
   ];
 
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.classList.add('menu-open');
+    } else {
+      document.body.classList.remove('menu-open');
+    }
+    return () => document.body.classList.remove('menu-open');
+  }, [menuOpen]);
+
   return (
     <>
       {/* Top Info Bar */}
@@ -66,7 +75,57 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Main Navbar */}
+      {/* Mobile Navigation Overlay & Drawer */}
+      <div 
+        className={`navbar-overlay ${menuOpen ? 'open' : ''}`} 
+        onClick={() => setMenuOpen(false)}
+      ></div>
+
+      <div className={`navbar-drawer ${menuOpen ? 'open' : ''}`}>
+        <div className="drawer-header">
+          <button className="drawer-close" onClick={() => setMenuOpen(false)}>
+            <i className="fas fa-times"></i>
+          </button>
+          <div className="drawer-logo">
+            <img src="/assets/logo.png" alt="SVS Grands" />
+            <span className="logo-text">SVS Grands</span>
+          </div>
+        </div>
+
+        <div className="drawer-nav">
+          {navLinks.map(link => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className={location.pathname === link.to ? 'active' : ''}
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="drawer-footer">
+          <div className="drawer-contact">
+            <a href="mailto:svsgrands@gmail.com" className="contact-item">
+              <span className="icon-circle"><i className="fas fa-envelope"></i></span>
+              svsgrands@gmail.com
+            </a>
+            <a href="tel:+918341199779" className="contact-item">
+              <span className="icon-circle"><i className="fas fa-phone"></i></span>
+              +91-8341199779
+            </a>
+          </div>
+          <div className="drawer-socials">
+            <a href="#"><i className="fab fa-facebook-f"></i></a>
+            <a href="#"><i className="fab fa-x-twitter"></i></a>
+            <a href="#"><i className="fab fa-instagram"></i></a>
+            <a href="#"><i className="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Main Navbar */}
       <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`}>
         <div className="container">
           <Link to="/" className="navbar-logo">
@@ -74,13 +133,13 @@ export default function Navbar() {
             <span className="navbar-logo-text">SVS Grands</span>
           </Link>
 
-          <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
+          {/* Desktop Links */}
+          <div className="navbar-links">
             {navLinks.map(link => (
               <Link
                 key={link.to}
                 to={link.to}
                 className={location.pathname === link.to ? 'active' : ''}
-                onClick={() => setMenuOpen(false)}
               >
                 {link.label}
               </Link>

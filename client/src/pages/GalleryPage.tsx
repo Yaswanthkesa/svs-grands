@@ -14,7 +14,7 @@ interface GalleryItem {
 const galleryItems: GalleryItem[] = [
   // Classic Room
   { src: '/assets/rooms/classic/1.png', alt: 'Classic Room — View 1', category: 'classic', type: 'image' },
-  { src: '/assets/rooms/classic/2.png', alt: 'Classic Room — View 2', category: 'classic', type: 'image' },
+  { src: '/assets/rooms/classic/2.png', alt: 'Classic Room — Washroom', category: 'classic', type: 'image' },
   { src: '/assets/rooms/classic/3.png', alt: 'Classic Room — View 3', category: 'classic', type: 'image' },
   { src: '/assets/rooms/classic/4.png', alt: 'Classic Room — View 4', category: 'classic', type: 'image' },
   { src: '/assets/rooms/classic/5.png', alt: 'Classic Room — View 5', category: 'classic', type: 'image' },
@@ -25,14 +25,14 @@ const galleryItems: GalleryItem[] = [
   { src: '/assets/gallery/classic/ac-room-tour-2.mp4', alt: 'Classic Room Walkthrough 2', category: 'classic', type: 'video', poster: '/assets/rooms/classic/4.png' },
   
   // Standard Room
-  { src: '/assets/rooms/standard/1.png', alt: 'Standard Room — View 1', category: 'standard', type: 'image' },
+  { src: '/assets/rooms/standard/1.png', alt: 'Standard Room — Washroom', category: 'standard', type: 'image' },
   { src: '/assets/rooms/standard/2.png', alt: 'Standard Room — View 2', category: 'standard', type: 'image' },
   { src: '/assets/rooms/standard/3.png', alt: 'Standard Room — View 3', category: 'standard', type: 'image' },
   // Standard Room — Video
   { src: '/assets/gallery/standard/non-ac-room-tour.mp4', alt: 'Standard Room Tour', category: 'standard', type: 'video', poster: '/assets/rooms/standard/1.png' },
 
   // Deluxe Room
-  { src: '/assets/rooms/deluxe/1.png', alt: 'Deluxe Room — View 1', category: 'deluxe', type: 'image' },
+  { src: '/assets/rooms/deluxe/1.png', alt: 'Deluxe Room — Washroom', category: 'deluxe', type: 'image' },
   { src: '/assets/rooms/deluxe/2.png', alt: 'Deluxe Room — View 2', category: 'deluxe', type: 'image' },
   { src: '/assets/rooms/deluxe/3.png', alt: 'Deluxe Room — View 3', category: 'deluxe', type: 'image' },
   { src: '/assets/rooms/deluxe/4.png', alt: 'Deluxe Room — View 4', category: 'deluxe', type: 'image' },
@@ -43,10 +43,10 @@ const galleryItems: GalleryItem[] = [
   { src: '/assets/rooms/superior/3.png', alt: 'Superior Room — View 3', category: 'superior', type: 'image' },
   { src: '/assets/rooms/superior/4.png', alt: 'Superior Room — View 4', category: 'superior', type: 'image' },
   { src: '/assets/rooms/superior/5.png', alt: 'Superior Room — View 5', category: 'superior', type: 'image' },
-  { src: '/assets/rooms/superior/6.png', alt: 'Superior Room — View 6', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/6.png', alt: 'Superior Room — Washroom', category: 'superior', type: 'image' },
 
   // Family Comfort Room
-  { src: '/assets/rooms/family-comfort/1.png', alt: 'Family Comfort Room — View 1', category: 'family-comfort', type: 'image' },
+  { src: '/assets/rooms/family-comfort/1.png', alt: 'Family Comfort Room — Washroom', category: 'family-comfort', type: 'image' },
   { src: '/assets/rooms/family-comfort/2.png', alt: 'Family Comfort Room — View 2', category: 'family-comfort', type: 'image' },
   { src: '/assets/rooms/family-comfort/3.png', alt: 'Family Comfort Room — View 3', category: 'family-comfort', type: 'image' },
 
@@ -101,73 +101,96 @@ export default function GalleryPage() {
 
   return (
     <div className="gallery-page">
-      {/* Page Header */}
-      <div className="page-header">
+      {/* Page Header - Luxury Editorial Style */}
+      <div className="page-header gallery-hero">
         <div className="container">
+          <div className="gallery-hero-badge">SVS GRANDS EXPERIENCE</div>
           <h1 className="page-header-title">Gallery</h1>
           <div className="page-header-ornament">
-            <span /><span /><span />
+            <span className="line"></span>
+            <span className="dot">✦</span>
+            <span className="line"></span>
           </div>
           <p className="page-header-subtitle">
-            Take a virtual tour of SVS Grands — our rooms, facilities, and surroundings.
+            Explore our rooms, facilities, and guest experience at SVS Grands.
           </p>
         </div>
       </div>
 
-      {/* Category Filter Bar */}
-      <div className="gallery-filter-bar">
-        <div className="container">
-          <div className="gallery-filters">
-            {categories.map(cat => (
-              <button
-                key={cat.key}
-                className={`gallery-filter-btn ${activeCategory === cat.key ? 'active' : ''}`}
-                onClick={() => setActiveCategory(cat.key)}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-          <div className="gallery-count">
-            <span>{imageCount} Photo{imageCount !== 1 ? 's' : ''}</span>
-            <span className="gallery-count-sep">·</span>
-            <span>{videoCount} Video{videoCount !== 1 ? 's' : ''}</span>
+      {/* Category Filter Bar - Modern Pill Tabs */}
+      <div className="gallery-filter-wrapper">
+        <div className="gallery-filter-bar">
+          <div className="container">
+            <div className="gallery-filters-container">
+              <div className="gallery-filters">
+                {categories.map(cat => {
+                  const count = cat.key === 'all' 
+                    ? galleryItems.length 
+                    : galleryItems.filter(i => i.category === cat.key).length;
+                  return (
+                    <button
+                      key={cat.key}
+                      className={`gallery-filter-btn ${activeCategory === cat.key ? 'active' : ''}`}
+                      onClick={() => setActiveCategory(cat.key)}
+                    >
+                      {cat.label} <span className="cat-count">{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Gallery Grid */}
+      {/* Gallery Content - Masonry Flow */}
       <div className="gallery-content">
         <div className="container">
-          <div className="gallery-grid">
-            {filtered.map((item, i) => (
-              <div
-                className={`gallery-item ${i === 0 ? 'gallery-item-featured' : ''}`}
-                key={`${item.src}-${i}`}
-                onClick={() => openLightbox(i)}
-              >
-                {item.type === 'video' ? (
-                  <div className="gallery-video-thumb">
-                    <img
-                      src={item.poster || '/assets/gallery/exterior/ground-floor-corridor.jpeg'}
-                      alt={item.alt}
-                      loading="lazy"
-                    />
-                    <div className="gallery-play-badge">
-                      <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
+          <div className="gallery-masonry">
+            {filtered.map((item, i) => {
+              // Create an editorial masonry pattern based on index
+              let sizeClass = '';
+              if (i % 7 === 0) sizeClass = 'gallery-span-large';
+              else if (i % 7 === 3 || i % 7 === 5) sizeClass = 'gallery-span-tall';
+              
+              return (
+                <div
+                  className={`gallery-item ${sizeClass}`}
+                  key={`${item.src}-${i}`}
+                  onClick={() => openLightbox(i)}
+                >
+                  <div className="gallery-card-inner">
+                    {item.type === 'video' ? (
+                      <div className="gallery-video-thumb">
+                        <img
+                          src={item.poster || '/assets/gallery/exterior/ground-floor-corridor.jpeg'}
+                          alt={item.alt}
+                          loading="lazy"
+                        />
+                        <div className="gallery-play-icon">
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                        <div className="video-tour-label">VIDEO TOUR</div>
+                      </div>
+                    ) : (
+                      <img src={item.src} alt={item.alt} loading="lazy" />
+                    )}
+                    
+                    <div className="gallery-item-hover-content">
+                      <div className="item-meta">
+                        <span className="item-category">{item.category}</span>
+                        <h4 className="item-title">{item.alt}</h4>
+                      </div>
+                      <div className="item-action-icon">
+                        {item.type === 'video' ? '▶' : '🔍'}
+                      </div>
                     </div>
                   </div>
-                ) : (
-                  <img src={item.src} alt={item.alt} loading="lazy" />
-                )}
-                <div className="gallery-item-overlay">
-                  <span className="gallery-item-zoom">{item.type === 'video' ? '▶' : '🔍'}</span>
-                  <span className="gallery-item-label">{item.alt}</span>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

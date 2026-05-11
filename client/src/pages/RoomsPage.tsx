@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { calculatePrice, ROOM_NAMES, NORMAL_RATES } from '../utils/pricing';
 import type { RoomId } from '../utils/pricing';
 import './RoomsPage.css';
 
 const getRoomImage = (id: string) => {
-  if (id === 'DELUXE') return '/assets/rooms/deluxe/1.png';
+  if (id === 'DELUXE') return '/assets/rooms/deluxe/2.png';
   if (id === 'SUPERIOR') return '/assets/rooms/superior/1.png';
-  if (id === 'FAMILY_COMFORT') return '/assets/rooms/family-comfort/1.png';
+  if (id === 'FAMILY_COMFORT') return '/assets/rooms/family-comfort/2.png';
   if (id === 'CLASSIC') return '/assets/rooms/classic/1.png';
-  if (id === 'STANDARD') return '/assets/rooms/standard/1.png';
+  if (id === 'STANDARD') return '/assets/rooms/standard/2.png';
   return '/assets/rooms/classic/1.png';
 };
 
@@ -58,6 +58,12 @@ export default function RoomsPage() {
   const [checkOutDate] = useState(tomorrow.toISOString().split('T')[0]);
   const [guests] = useState(2);
   const [pricingMap, setPricingMap] = useState<Record<string, { price: number; error?: string }>>({});
+  
+  // Animation States
+  const [animPhase, setAnimPhase] = useState<'idle' | 'reset' | 'animating'>('idle');
+  const [prevImage, setPrevImage] = useState<string | null>(null);
+  const lastImageRef = useRef<string | null>(null);
+  const LISTING_BG = '/assets/rooms/superior/1.png';
 
   // Hash Routing Logic
   const hash = location.hash;
@@ -86,6 +92,43 @@ export default function RoomsPage() {
     }
   }, [checkInDate, checkOutDate, guests]);
 
+  // Trigger animations on room change or view entry
+  useEffect(() => {
+    if (isDetailsView) {
+      // Force scroll to top to ensure cinematic reveal is visible
+      window.scrollTo(0, 0);
+
+      // 1. Determine the 'from' image for the background layer
+      if (lastImageRef.current) {
+        // We are switching between rooms
+        if (lastImageRef.current !== activeRoom.image) {
+          setPrevImage(lastImageRef.current);
+        }
+      } else {
+        // We are entering from the listing view
+        setPrevImage(LISTING_BG);
+      }
+      
+      // 2. Prepare for new animation
+      setAnimPhase('reset');
+      
+      // 3. Update ref for next transition
+      lastImageRef.current = activeRoom.image;
+      
+      // 4. Start new animation after a tiny tick
+      const timer = setTimeout(() => {
+        setAnimPhase('animating');
+      }, 100);
+
+      return () => clearTimeout(timer);
+    } else {
+      // Clean up when leaving details
+      setAnimPhase('idle');
+      setPrevImage(null);
+      lastImageRef.current = null;
+    }
+  }, [isDetailsView, activeRoomIndex]);
+
   const handleBookNow = (roomId: string) => {
     navigate(`/checkout?roomType=${roomId}&checkIn=${checkInDate}&checkOut=${checkOutDate}&guests=${guests}`);
   };
@@ -102,14 +145,26 @@ export default function RoomsPage() {
   const pricing = pricingMap[activeRoom.id];
 
   return (
-    <div className={`rooms-page-container ${isDetailsView ? 'is-details' : 'is-listing'}`}>
+    <div className={`rooms-page-container ${isDetailsView ? 'is-details' : 'is-listing'} phase-${animPhase}`}>
       
       {/* Background for Details View */}
       {isDetailsView && (
-        <div 
-          className="rooms-details-bg" 
-          style={{ backgroundImage: `url(${activeRoom.image})` }} 
-        />
+        <>
+          {/* Layer 0: Previous Image (static underneath) */}
+          {prevImage && (
+            <div 
+              className="rooms-details-bg" 
+              style={{ backgroundImage: `url(${prevImage})`, opacity: 1, transform: 'scale(1)', filter: 'none', zIndex: 0 }} 
+            />
+          )}
+
+          {/* Layer 1: Active Image (fading in & cinematic reveal) */}
+          <div 
+            key={`active-${activeRoomIndex}`}
+            className={`rooms-details-bg ${animPhase === 'animating' ? 'bg-reveal' : ''}`} 
+            style={{ backgroundImage: `url(${activeRoom.image})`, zIndex: 1 }} 
+          />
+        </>
       )}
 
       {!isDetailsView ? (
@@ -144,73 +199,69 @@ export default function RoomsPage() {
         </div>
       ) : (
         <div className="rooms-details-view">
-          {/* Left Sidebar */}
-          <div className="rooms-details-sidebar">
-             <div className="sidebar-header">
-               <h2>Rooms</h2>
-               <button className="btn-back" onClick={goToListing}>← Back to list</button>
-             </div>
-             <div className="sidebar-thumbs">
-               {roomsData.map((room, idx) => (
-                 <div 
-                   key={room.id} 
-                   className={`sidebar-thumb-item ${idx === activeRoomIndex ? 'active' : ''}`} 
-                   onClick={() => openDetails(idx)}
-                 >
-                   <img src={room.image} alt={room.title} />
-                   <div className="thumb-overlay">
-                     <span>{room.title}</span>
-                   </div>
-                 </div>
-               ))}
-             </div>
-          </div>
-          
-          {/* Center Overlay Content */}
-          <div className="rooms-details-main">
-            <div className="details-card-overlay">
-               <h1>{activeRoom.title}</h1>
-               <div className="details-divider"></div>
-               
-               <div className="details-meta">
-                 <span>🛏️ {activeRoom.bedTypes}</span>
-                 <span>👥 Max {NORMAL_RATES[activeRoom.id].maxPersons} Persons</span>
-               </div>
-               
-               <p className="details-desc">{activeRoom.description}</p>
-               
-               <div className="details-amenities">
-                 {activeRoom.amenities.map(a => (
-                   <span key={a}>{a}</span>
-                 ))}
-               </div>
-               
-               <div className="details-pricing">
-                 {pricing?.error ? (
-                   <div className="room-rate-error">{pricing.error}</div>
-                 ) : (
-                   <>
-                     <div className="details-price-amount">
-                        ₹{(pricing?.price || 0).toLocaleString('en-IN')}
-                     </div>
-                     <span className="details-price-tax">per night, taxes included.</span>
-                     {guests > NORMAL_RATES[activeRoom.id].includedPersons && (
-                       <span className="details-price-tax" style={{color: 'var(--primary)'}}>
-                         Includes extra guest charge.
-                       </span>
-                     )}
-                   </>
-                 )}
-               </div>
-               
-               <button 
-                 className="btn-primary details-book-btn" 
-                 onClick={() => handleBookNow(activeRoom.id)}
-                 disabled={!!pricing?.error}
-               >
-                 Book Now
-               </button>
+          {/* Left Sidebar — matches reference */}
+          <aside className={`rd-sidebar ${animPhase === 'animating' ? 'sidebar-slide-in' : ''}`}>
+            <h3 className="rd-sidebar-title">Rooms</h3>
+
+            <div className="rd-thumbs-wrap">
+              {roomsData.map((room, idx) => (
+                <div
+                  key={room.id}
+                  className={`rd-thumb ${idx === activeRoomIndex ? 'rd-thumb--active' : ''} ${animPhase === 'animating' ? 'thumb-fade-in' : ''}`}
+                  onClick={() => openDetails(idx)}
+                  style={{ animationDelay: animPhase === 'animating' ? `${0.4 + idx * 0.1}s` : '0s' }}
+                >
+                  <img src={room.image} alt={room.title} />
+                  <div className="rd-thumb-overlay">
+                    <span>{room.title.toUpperCase()}</span>
+                  </div>
+                </div>
+              ))}
             </div>
+
+            <button className="rd-back-btn" onClick={goToListing}>← All Rooms</button>
+          </aside>
+
+          {/* Content Panel — translucent overlay beside sidebar */}
+          <div className={`rd-content-panel ${animPhase === 'animating' ? 'panel-slide-in' : ''}`}>
+            <h1 className="rd-room-title stagger-1">{activeRoom.title}</h1>
+
+            <div className="rd-divider stagger-2"></div>
+
+            <p className="rd-description stagger-3">{activeRoom.description}</p>
+
+            <div className="rd-meta-row stagger-4">
+              <span>🛏️ {activeRoom.bedTypes}</span>
+              <span>👥 Max {NORMAL_RATES[activeRoom.id].maxPersons} Guests</span>
+            </div>
+
+            <div className="rd-amenities stagger-5">
+              {activeRoom.amenities.map(a => (
+                <span key={a}>{a}</span>
+              ))}
+            </div>
+
+            <div className="rd-pricing stagger-6">
+              {pricing?.error ? (
+                <div className="room-rate-error">{pricing.error}</div>
+              ) : (
+                <>
+                  <div className="rd-price">₹{(pricing?.price || 0).toLocaleString('en-IN')}</div>
+                  <span className="rd-price-note">per night · taxes included</span>
+                  {guests > NORMAL_RATES[activeRoom.id].includedPersons && (
+                    <div className="rd-price-note rd-extra-charge">Includes extra guest charge</div>
+                  )}
+                </>
+              )}
+            </div>
+
+            <button
+              className="btn-primary rd-book-btn stagger-7"
+              onClick={() => handleBookNow(activeRoom.id)}
+              disabled={!!pricing?.error}
+            >
+              Reserve This Room
+            </button>
           </div>
         </div>
       )}

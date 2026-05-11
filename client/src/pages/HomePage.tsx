@@ -17,13 +17,13 @@ interface LayoutContext {
 
 const slides = [
   {
-    boldText: 'A COZY FAMILY',
-    normalText: 'STAY NEAR KONASEEMA TIRUPATHI TEMPLE.',
-    bgImage: '/assets/rooms/classic/2.png',
+    boldText: 'A COZY FAMILY STAY',
+    normalText: 'NEAR KONASEEMA TIRUPATHI TEMPLE.',
+    bgImage: '/assets/rooms/classic/3.png',
     fgImage: '/assets/rooms/classic/1.png',
     thumbs: [
       '/assets/rooms/classic/1.png',
-      '/assets/rooms/standard/1.png',
+      '/assets/rooms/standard/2.png',
     ],
   },
   {
@@ -33,16 +33,16 @@ const slides = [
     fgImage: '/assets/rooms/superior/1.png',
     thumbs: [
       '/assets/rooms/superior/2.png',
-      '/assets/rooms/deluxe/1.png',
+      '/assets/rooms/deluxe/2.png',
     ],
   },
   {
     boldText: 'COMFORTABLE ROOMS',
     normalText: 'AT COMFORTABLE PRICES.',
     bgImage: '/assets/rooms/deluxe/2.png',
-    fgImage: '/assets/rooms/deluxe/1.png',
+    fgImage: '/assets/rooms/deluxe/3.png',
     thumbs: [
-      '/assets/rooms/standard/1.png',
+      '/assets/rooms/standard/3.png',
       '/assets/rooms/classic/1.png',
     ],
   },
@@ -52,7 +52,7 @@ const roomCategories = [
   {
     id: 'STANDARD',
     name: 'Standard Room',
-    image: '/assets/rooms/standard/1.png',
+    image: '/assets/rooms/standard/2.png',
     price: '800',
     unit: '/12hrs',
     desc: 'Comfortable rooms with modern amenities — WiFi, TV (Optional), hot water and room service.'
@@ -68,7 +68,7 @@ const roomCategories = [
   {
     id: 'DELUXE',
     name: 'Deluxe Room',
-    image: '/assets/rooms/deluxe/1.png',
+    image: '/assets/rooms/deluxe/2.png',
     price: '1,500',
     unit: '/12hrs',
     desc: 'Spacious ground floor rooms with a double bed, TV, and premium furnishings for ultimate comfort.'
@@ -84,15 +84,55 @@ const roomCategories = [
   {
     id: 'FAMILY_COMFORT',
     name: 'Family Comfort Room',
-    image: '/assets/rooms/family-comfort/1.png',
+    image: '/assets/rooms/family-comfort/2.png',
     price: '1,200',
     unit: '/12hrs',
     desc: 'Perfect for families, these spacious first-floor rooms offer great value without compromising on comfort.'
   },
 ];
 
+const features = [
+  { 
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+      </svg>
+    ), 
+    title: 'Prime Location', 
+    desc: '2-minute walk from Sri Venkateswara Swamy Temple.' 
+  },
+  { 
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="3" width="22" height="13" rx="2" ry="2"/><path d="M7 21h10"/><path d="M12 16v5"/>
+      </svg>
+    ), 
+    title: 'Spacious Parking', 
+    desc: 'Secure and ample parking within hotel premises.' 
+  },
+  { 
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 21h18M3 7v1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7m-18 1h18V4H3v4zM4 21v-7m16 7v-7m-7 7v-4m0-10V4"/>
+      </svg>
+    ), 
+    title: 'Comfort & Hygiene', 
+    desc: 'Spotless rooms with daily housekeeping services.' 
+  },
+  { 
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+      </svg>
+    ), 
+    title: '24/7 Support', 
+    desc: 'Dedicated front desk team always available.' 
+  }
+];
+
 export default function HomePage() {
   const { openBooking } = useOutletContext<LayoutContext>();
+  // ... rest of the component
   const [current, setCurrent] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
   const [phase, setPhase] = useState<'idle' | 'exit' | 'enter'>('idle');
@@ -100,28 +140,19 @@ export default function HomePage() {
 
   const goToSlide = (index: number) => {
     if (index === current || phase !== 'idle') return;
-
-    // Phase 1: EXIT — all elements leave simultaneously
     setPhase('exit');
     setPrev(current);
 
-    // Phase 2: After exit completes (0.9s), swap content
     setTimeout(() => {
       setCurrent(index);
-
-      // Phase 3: ENTER — new elements appear
       setTimeout(() => {
         setPhase('enter');
-        // Return to idle after enter animation completes
         setTimeout(() => setPhase('idle'), 1000);
       }, 100);
-
-      // Clear prev after BG crossfade completes (2s)
       setTimeout(() => setPrev(null), 2000);
     }, 900);
   };
 
-  // Auto-play for hero
   useEffect(() => {
     if (phase !== 'idle') return;
     timerRef.current = setTimeout(() => {
@@ -133,21 +164,10 @@ export default function HomePage() {
   const slide = slides[current];
   const isVisible = phase === 'idle' || phase === 'enter';
 
-  const features = [
-    { icon: '📍', title: 'Prime Location', desc: 'Just a 2-minute walk from the famous Sri Venkateswara Swamy Temple.' },
-    { icon: '❄️', title: 'Classic & Standard Rooms', desc: '32 well-maintained rooms with flexible Classic and Standard options for every budget' },
-    { icon: '🚗', title: 'Spacious Parking', desc: 'Ample parking space ensuring safety and convenience for your vehicles.' },
-    { icon: '🛏️', title: 'Comfort & Hygiene', desc: 'Spotless rooms with premium linens, hot water, and excellent room service.' },
-    { icon: '⏱️', title: 'Flexible Check-ins', desc: '24-hour and 12-hour booking slots available to match your travel schedule.' },
-    { icon: '📞', title: '24/7 Support', desc: 'Our front desk is always available to make your stay hassle-free.' }
-  ];
-
   return (
     <>
       {/* ========== HERO SECTION ========== */}
       <section className="hero-split">
-
-        {/* LAYER 1: Full BG images — smooth crossfade (only reacts to current) */}
         {slides.map((s, i) => (
           <div
             key={`bg-${i}`}
@@ -155,45 +175,27 @@ export default function HomePage() {
             style={{ backgroundImage: `url('${s.bgImage}')` }}
           />
         ))}
-
-        {/* LAYER 2: Static frosted overlay — NEVER MOVES */}
         <div className="hero-overlay-static" />
-
-        {/* LAYER 3: Decorative circle — STATIC */}
         <div className="hero-deco-circle hero-deco-circle--1" />
-
-        {/* LAYER 4: Text area */}
         <div className="hero-text-area">
           <div className="hero-text-content">
-            {/* Badge — exits UP, enters from UP */}
             <div className={`hero-split-badge hero-anim-up ${isVisible ? 'visible' : ''}`}>
               BEST LODGE NEAR KONASEEMA TIRUPATHI
             </div>
-
-            {/* Headline — exits DOWN, enters from DOWN */}
             <h1 className={`hero-split-headline hero-anim-down ${isVisible ? 'visible' : ''}`}>
               <strong>{slide.boldText}</strong>{' '}
               {slide.normalText}
             </h1>
-
-            {/* Booking bar — COMPLETELY STATIC */}
             <div className="hero-reservation-wrapper">
               <ReservationBar inline />
             </div>
           </div>
         </div>
-
-        {/* LAYER 5: Right featured image — sequential: old gone, then new appears */}
         <div className="hero-fg-container">
-          <div
-            key={`fg-${current}`}
-            className={`hero-fg-panel ${isVisible ? 'active' : ''}`}
-          >
+          <div key={`fg-${current}`} className={`hero-fg-panel ${isVisible ? 'active' : ''}`}>
             <img src={slide.fgImage} alt="" />
           </div>
         </div>
-
-        {/* LAYER 6: Bottom thumbnails — slide left-to-right */}
         <div className="hero-thumbs" key={`strip-${current}`}>
           {slide.thumbs.map((src, i) => (
             <div className={`hero-thumb-card ${isVisible ? 'visible' : ''}`} key={i} style={{ animationDelay: `${i * 0.12}s` }}>
@@ -203,19 +205,107 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ========== AMENITIES ========== */}
-      <section className="about section-padding" id="about">
+      {/* ========== LUXURY ABOUT RESORT SECTION ========== */}
+      <section className="about-resort-section">
         <div className="container">
-          <h2 className="section-title">Why Choose SVS Grands?</h2>
-          <p className="section-subtitle">
-            Established in 2024, SVS Grands offers modern comfort at budget-friendly prices — ideally located near the famous Konaseema Tirupathi temple.
-          </p>
-          <div className="about-grid">
+          <div className="ar-layout">
+            
+            {/* Left Content Column */}
+            <div className="ar-left">
+              <div className="ar-intro">
+                <span className="ar-label">WELCOME TO SVS GRANDS</span>
+                <h2 className="ar-heading">The Best Stay Near Konaseema Tirupathi</h2>
+                <p className="ar-desc">
+                  Located near the famous Sri Venkateswara Swamy Temple, Vadapalli, SVS Grands offers a peaceful and comfortable stay experience for pilgrims, families, and travelers. Designed with modern comfort and traditional hospitality, our rooms provide a relaxing atmosphere with convenient amenities, flexible stay options, and easy access to nearby spiritual destinations.
+                </p>
+              </div>
+
+              {/* Stats/Proof Block */}
+              <div className="ar-proof-block">
+                <div className="ar-proof-image">
+                  <img src="/assets/rooms/classic/1.png" alt="SVS Grands Interior" />
+                  <div className="ar-image-overlay"></div>
+                </div>
+                <div className="ar-proof-stats">
+                  <div className="ar-stat-card">
+                    <div className="ar-stat-header">
+                      <span className="ar-stat-icon">★</span>
+                      <h4>4.6 Google Rating</h4>
+                    </div>
+                    <p>Trusted by hundreds of guests visiting Konaseema and Vadapalli Temple.</p>
+                  </div>
+                  <div className="ar-stat-card">
+                    <div className="ar-stat-header">
+                      <span className="ar-stat-icon">✦</span>
+                      <h4>Premium Amenities</h4>
+                    </div>
+                    <p>AC Rooms, Hot Water, Free WiFi, Parking, Flexible Check-ins & 24/7 Support.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Visual Column (Polished Asymmetrical Composition) */}
+            <div className="ar-right">
+              <div className="ar-circle-container">
+                {/* Circle 1: Long Stay Benefits (Largest Hero) */}
+                <div className="ar-circle ar-circle-1 ar-circle-dark ar-circle-v-large">
+                  <div className="ar-circle-inner">
+                    <h3 className="ar-circle-title">Long Stay Benefits</h3>
+                    <p className="ar-circle-main-text">
+                      Book for 7+ Days and enjoy special pricing, complimentary Hi-tea, and a peaceful extended stay experience near Konaseema Tirupathi.
+                    </p>
+                    <div className="ar-circle-cta">CALL 8341199779</div>
+                  </div>
+                </div>
+                
+                {/* Circle 2: Group Booking (Secondary Anchor) */}
+                <div className="ar-circle ar-circle-2 ar-circle-dark ar-circle-large">
+                  <div className="ar-circle-inner">
+                    <h3 className="ar-circle-title">Group Booking</h3>
+                    <p className="ar-circle-main-text">10+ Rooms available for religious groups, temple visitors, and corporate stays at special tariff.</p>
+                    <div className="ar-circle-cta">CALL 8341199779</div>
+                  </div>
+                </div>
+
+                {/* Circle 3: Top Image (Medium) */}
+                <div className="ar-circle ar-circle-3 ar-circle-medium">
+                  <img src="/assets/rooms/superior/1.png" alt="Premium Room Stay" />
+                </div>
+
+                {/* Circle 4: Bottom Image (Small) */}
+                <div className="ar-circle ar-circle-4 ar-circle-small">
+                  <img src="/assets/rooms/deluxe/3.png" alt="Luxury Amenities" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ========== WHY CHOOSE SECTION (Luxury Redesign) ========== */}
+      <section className="why-choose-section section-padding">
+        <div className="container">
+          <div className="wc-header">
+            <span className="wc-subtitle">Discover Our Features</span>
+            <h2 className="wc-title">Why Choose SVS Grands?</h2>
+            <div className="wc-divider">
+              <span></span>
+              <i className="fa fa-diamond">✦</i>
+              <span></span>
+            </div>
+          </div>
+
+          <div className="wc-editorial-wrap">
             {features.map((f, i) => (
-              <div className="about-card" key={i}>
-                <span className="about-card-icon">{f.icon}</span>
-                <h3>{f.title}</h3>
-                <p>{f.desc}</p>
+              <div className="wc-editorial-item" key={i}>
+                <div className="wc-editorial-icon">{f.icon}</div>
+                <div className="wc-editorial-content">
+                  <h3>{f.title}</h3>
+                  <p>{f.desc}</p>
+                </div>
+                {i < features.length - 1 && <div className="wc-editorial-divider"></div>}
               </div>
             ))}
           </div>
@@ -234,26 +324,25 @@ export default function HomePage() {
 
           <div className="home-rooms-carousel-wrapper">
             <Swiper
-              modules={[Autoplay, FreeMode]}
+              modules={[Autoplay]}
               spaceBetween={30}
               slidesPerView={1}
+              slidesPerGroup={1}
               loop={true}
-              speed={5000}
-              freeMode={true}
+              speed={1000}
               autoplay={{
-                delay: 0,
+                delay: 4000,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
               }}
               breakpoints={{
-                640: {
-                  slidesPerView: 1.5,
-                },
-                768: {
+                640: { 
                   slidesPerView: 2,
+                  slidesPerGroup: 2 
                 },
-                1024: {
+                1024: { 
                   slidesPerView: 3,
+                  slidesPerGroup: 1 
                 },
               }}
               className="home-rooms-swiper"

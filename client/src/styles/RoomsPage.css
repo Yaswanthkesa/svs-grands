@@ -3,8 +3,7 @@
   min-height: calc(100vh - var(--navbar-h) - var(--reservation-h) - var(--footer-h));
   position: relative;
   width: 100%;
-  background: #0c0a09;
-  /* Base color to prevent white flashes */
+  background: #0c0a09; /* Base color to prevent white flashes */
 }
 
 /* ========================================================
@@ -73,14 +72,13 @@
 }
 
 .room-grid-card:hover .room-grid-img {
-  transform: scale(1.08);
-  /* Zoom effect on hover */
+  transform: scale(1.08); /* Zoom effect on hover */
 }
 
 .room-card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(43, 36, 29, 0.58), rgba(43, 36, 29, 0.10));
+  background: linear-gradient(to top, rgba(43,36,29,0.58), rgba(43,36,29,0.10));
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -90,7 +88,7 @@
 }
 
 .room-grid-card:hover .room-card-overlay {
-  background: linear-gradient(to top, rgba(43, 36, 29, 0.7), rgba(43, 36, 29, 0.20));
+  background: linear-gradient(to top, rgba(43,36,29,0.7), rgba(43,36,29,0.20));
 }
 
 .room-card-overlay h2 {
@@ -136,10 +134,10 @@
   opacity: 0;
   transform: scale(1.1);
   filter: blur(15px);
-  transition: opacity 2.5s cubic-bezier(0.2, 0, 0.2, 1),
-    transform 2.5s cubic-bezier(0.2, 0, 0.2, 1),
-    filter 2.5s cubic-bezier(0.2, 0, 0.2, 1),
-    background-image 0.8s ease-in-out;
+  transition: opacity 2.5s cubic-bezier(0.2, 0, 0.2, 1), 
+              transform 2.5s cubic-bezier(0.2, 0, 0.2, 1), 
+              filter 2.5s cubic-bezier(0.2, 0, 0.2, 1), 
+              background-image 0.8s ease-in-out;
   will-change: transform, opacity, filter;
 }
 
@@ -172,8 +170,7 @@
   position: relative;
   width: 160px;
   height: auto;
-  max-height: 85vh;
-  /* Allow full height if needed */
+  max-height: 85vh; /* Allow full height if needed */
   background: rgba(16, 14, 10, 0.82);
   border: 1px solid rgba(180, 150, 90, 0.18);
   border-radius: 0;
@@ -182,8 +179,8 @@
   z-index: 50;
   padding: 0;
   overflow: hidden;
-  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.3);
-
+  box-shadow: 0 6px 28px rgba(0,0,0,0.3);
+  
   /* Animation initial state */
   transform: translateX(-110%);
   opacity: 0;
@@ -224,17 +221,15 @@
 
   /* Slim visible scrollbar */
   scrollbar-width: thin;
-  scrollbar-color: rgba(180, 150, 90, 0.4) rgba(0, 0, 0, 0.15);
+  scrollbar-color: rgba(180, 150, 90, 0.4) rgba(0,0,0,0.15);
 }
 
 .rd-thumbs-wrap::-webkit-scrollbar {
   width: 4px;
 }
-
 .rd-thumbs-wrap::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(0,0,0,0.15);
 }
-
 .rd-thumbs-wrap::-webkit-scrollbar-thumb {
   background: rgba(180, 150, 90, 0.5);
   border-radius: 3px;
@@ -252,7 +247,7 @@
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   flex-shrink: 0;
   position: relative;
-
+  
   /* Animation initial state */
   opacity: 0;
   transform: translateY(10px);
@@ -297,7 +292,7 @@
   letter-spacing: 1px;
   text-align: center;
   font-weight: 600;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
 .rd-thumb:hover img {
@@ -314,18 +309,13 @@
 }
 
 .rd-thumb--active.thumb-fade-in {
-  animation: thumbEnter 0.6s forwards cubic-bezier(0.16, 1, 0.3, 1),
-    activeGlow 1.5s infinite alternate 1s;
+  animation: thumbEnter 0.6s forwards cubic-bezier(0.16, 1, 0.3, 1), 
+             activeGlow 1.5s infinite alternate 1s;
 }
 
 @keyframes activeGlow {
-  from {
-    box-shadow: 0 0 5px rgba(180, 150, 90, 0.2);
-  }
-
-  to {
-    box-shadow: 0 0 15px rgba(180, 150, 90, 0.6);
-  }
+  from { box-shadow: 0 0 5px rgba(180, 150, 90, 0.2); }
+  to   { box-shadow: 0 0 15px rgba(180, 150, 90, 0.6); }
 }
 
 .rd-thumb--active img {
@@ -339,9 +329,9 @@
 /* Back button */
 .rd-back-btn {
   background: transparent;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255,255,255,0.4);
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(255,255,255,0.06);
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -350,7 +340,6 @@
   cursor: pointer;
   transition: color 0.3s ease;
 }
-
 .rd-back-btn:hover {
   color: var(--secondary);
 }
@@ -364,8 +353,7 @@
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   border: 1px solid rgba(180, 150, 90, 0.18);
-  border-left: none;
-  /* Seamless connection */
+  border-left: none; /* Seamless connection */
   border-radius: 0;
   padding: 20px 28px 24px;
   text-align: left;
@@ -390,33 +378,13 @@
   will-change: transform, opacity;
 }
 
-.rd-content-panel.panel-slide-in .stagger-1 {
-  animation: staggerEnter 0.8s forwards 0.6s;
-}
-
-.rd-content-panel.panel-slide-in .stagger-2 {
-  animation: staggerEnter 0.8s forwards 0.8s;
-}
-
-.rd-content-panel.panel-slide-in .stagger-3 {
-  animation: staggerEnter 0.8s forwards 1.0s;
-}
-
-.rd-content-panel.panel-slide-in .stagger-4 {
-  animation: staggerEnter 0.8s forwards 1.2s;
-}
-
-.rd-content-panel.panel-slide-in .stagger-5 {
-  animation: staggerEnter 0.8s forwards 1.4s;
-}
-
-.rd-content-panel.panel-slide-in .stagger-6 {
-  animation: staggerEnter 0.8s forwards 1.6s;
-}
-
-.rd-content-panel.panel-slide-in .stagger-7 {
-  animation: staggerEnter 0.8s forwards 1.8s;
-}
+.rd-content-panel.panel-slide-in .stagger-1 { animation: staggerEnter 0.8s forwards 0.6s; }
+.rd-content-panel.panel-slide-in .stagger-2 { animation: staggerEnter 0.8s forwards 0.8s; }
+.rd-content-panel.panel-slide-in .stagger-3 { animation: staggerEnter 0.8s forwards 1.0s; }
+.rd-content-panel.panel-slide-in .stagger-4 { animation: staggerEnter 0.8s forwards 1.2s; }
+.rd-content-panel.panel-slide-in .stagger-5 { animation: staggerEnter 0.8s forwards 1.4s; }
+.rd-content-panel.panel-slide-in .stagger-6 { animation: staggerEnter 0.8s forwards 1.6s; }
+.rd-content-panel.panel-slide-in .stagger-7 { animation: staggerEnter 0.8s forwards 1.8s; }
 
 @keyframes staggerEnter {
   to {
@@ -462,7 +430,7 @@
 
 .rd-meta-row span {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255,255,255,0.65);
 }
 
 /* Amenities — inline, compact */
@@ -475,7 +443,7 @@
 
 .rd-amenities span {
   font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.7);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -502,7 +470,7 @@
 .rd-price-note {
   display: block;
   font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255,255,255,0.4);
   margin-top: 3px;
   letter-spacing: 0.5px;
 }
@@ -561,12 +529,10 @@
     height: auto;
     min-height: auto;
     max-height: none;
-    padding: 5px 2px 15px;
-    /* Bottom padding for scrollbar/glow */
+    padding: 5px 2px 15px; /* Bottom padding for scrollbar/glow */
     margin: 0;
     gap: 12px;
-    scrollbar-width: none;
-    /* Hide scrollbar for clean swipe */
+    scrollbar-width: none; /* Hide scrollbar for clean swipe */
   }
 
   .rd-thumbs-wrap::-webkit-scrollbar {
@@ -636,16 +602,14 @@
   .rooms-grid {
     grid-template-columns: 1fr;
   }
-
   .room-grid-card.featured {
     grid-column: span 1;
     aspect-ratio: 4 / 5;
   }
-
   .room-card-overlay h2 {
     font-size: 1.5rem;
   }
-
+  
   /* Details Mobile Adjustments */
   .rooms-details-view {
     padding: 10vh 4% 4vh;

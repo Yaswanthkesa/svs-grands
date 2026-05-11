@@ -39,7 +39,7 @@ export default function ReservationBar({ inline }: ReservationBarProps) {
           />
         </div>
 
-        <div className="reservation-bar-divider" />
+        <div className="reservation-bar-divider" style={{ margin: inline ? '0 32px' : '0 24px' }} />
 
         <div className="reservation-bar-field">
           <select value={roomType} onChange={e => setRoomType(e.target.value as RoomId)}>
